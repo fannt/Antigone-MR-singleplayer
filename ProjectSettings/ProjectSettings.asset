@@ -84,7 +84,7 @@ PlayerSettings:
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
   runInBackground: 1
-  muteOtherAudioSources: 0
+  muteOtherAudioSources: 1
   Prepare IOS For Recording: 0
   Force IOS Speakers When Recording: 0
   audioSpatialExperience: 0
@@ -148,6 +148,11 @@ PlayerSettings:
   - {fileID: 11400000, guid: f8a442de0c8906f4d9c00184993fc289, type: 2}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 11400000, guid: 56a98106ce58f09459a9990007b50acb, type: 2}
+  - {fileID: 4800000, guid: e7c77f6eaab324a819efdc13b8125a39, type: 3}
+  - {fileID: 4800000, guid: 6743a50a812740be8c0aa3fccc46fae9, type: 3}
+  - {fileID: 1209775975427267883, guid: 2462f957eee75f940a3393fd6f039795, type: 2}
+  - {fileID: 7505857612962797424, guid: 136958f90a130274b8b70a31eed352fb, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -195,7 +200,7 @@ PlayerSettings:
   VertexChannelCompressionMask: 4054
   iPhoneSdkVersion: 988
   iOSSimulatorArchitecture: 0
-  iOSTargetOSVersionString: 13.0
+  iOSTargetOSVersionString: 17.0
   tvOSSdkVersion: 0
   tvOSSimulatorArchitecture: 0
   tvOSRequireExtendedGameController: 0
@@ -252,8 +257,8 @@ PlayerSettings:
   iOSManualSigningProvisioningProfileType: 0
   tvOSManualSigningProvisioningProfileType: 0
   VisionOSManualSigningProvisioningProfileType: 0
-  appleEnableAutomaticSigning: 0
-  iOSRequireARKit: 0
+  appleEnableAutomaticSigning: 1
+  iOSRequireARKit: 1
   iOSAutomaticallyDetectAndAddCapabilities: 1
   appleEnableProMotion: 0
   shaderPrecisionModel: 0
@@ -624,6 +629,9 @@ PlayerSettings:
   - serializedVersion: 3
     m_BuildTarget: Android
     m_Formats: 03000000
+  - serializedVersion: 3
+    m_BuildTarget: iOS
+    m_Formats: 03000000
   playModeTestRunnerEnabled: 0
   runPlayModeTestAsEditModeTest: 0
   actionOnDotNetUnhandledException: 1
@@ -631,9 +639,9 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
-  locationUsageDescription: 
-  microphoneUsageDescription: 
+  cameraUsageDescription: Required for augmented reality support.
+  locationUsageDescription: Required for augmented reality support.
+  microphoneUsageDescription: Required for augmented reality support.
   bluetoothUsageDescription: 
   macOSTargetOSVersion: 11.0
   switchNMETAOverride: 
@@ -893,6 +901,7 @@ PlayerSettings:
     Android: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS
     Standalone: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS
     Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS
+    iPhone: UNITY_XR_ARKIT_LOADER_ENABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
