@@ -153,27 +153,38 @@ namespace UnityEngine.XR.Templates.MR
                 Destroy(spawnedObject.gameObject);
             }
         }
-
         /// <summary>
-        /// Deletes all anchors and clears the saved anchor data list.
-        /// This method is called when the Delete Anchors button is clicked from the UI.
+        /// Deletes all anchors (including your Control Object) and clears the list.
         /// </summary>
         public async void DeleteAnchors()
         {
-            m_AnchorText.text = "<b><u><align=center>- Deleted Persistent Anchors -</b></u></align>\n";
+            // 1. SAFELY DETACH YOUR CONTROL OBJECT
+            if (objectToControl != null)
+            {
+                // Unparent it so it doesn't get deleted with the anchor
+                objectToControl.transform.SetParent(null);
+                
+                // Optional: Reset it to a comfortable spawn position if you want
+                // objectToControl.transform.position = Camera.main.transform.position + Vector3.forward;
+            }
+
+            // 2. RUN THE STANDARD DELETION (This wipes the disk)
+            if (m_AnchorText) m_AnchorText.text = "<b><u><align=center>- Deleting Anchors -</b></u></align>\n";
+            
             await EraseAnchorsAsync();
 
+            // 3. UI FEEDBACK
             if (m_SaveAndLoadAnchorIdsToFile.SavedAnchorsData.Count != 0)
             {
-                m_AnchorText.text += "\n\n<align=center>Failed to delete all anchors.</align>\n\n";
+                if(m_AnchorText) m_AnchorText.text += "\n\n<align=center>Failed to delete all anchors.</align>\n\n";
                 foreach (var kvp in m_SaveAndLoadAnchorIdsToFile.SavedAnchorsData)
                 {
-                    m_AnchorText.text += $"GUID failed to remove: [{kvp.Key}]\n\n";
+                    if(m_AnchorText) m_AnchorText.text += $"GUID failed to remove: [{kvp.Key}]\n\n";
                 }
             }
             else
             {
-                m_AnchorText.text += "\n\n<align=center>All anchors deleted.</align>";
+                if(m_AnchorText) m_AnchorText.text += "\n\n<align=center>All anchors deleted.</align>";
             }
         }
 
