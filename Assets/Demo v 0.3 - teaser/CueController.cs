@@ -12,8 +12,7 @@ public class Cue
 
     public float audioDelay = 0f;        // delay before audio starts
     public bool goToCue = false;     // automatically trigger next cue when done
-
-    public void Execute() { }
+    public bool setActiveOnStart = true; // true = activate on start, false = deactivate on start
 }
 
 public class CueController : MonoBehaviour
@@ -65,10 +64,23 @@ public class CueController : MonoBehaviour
         cueRunning = true;
         Debug.Log($"Cue {index} START: {cue.cueName}");
 
-        Debug.Log($"Cue {index}: activating object {cue.gameObject?.name}");
-        // Activate object immediately
         if (cue.gameObject != null)
-            cue.gameObject.SetActive(true);
+        {
+            if (cue.setActiveOnStart)
+            {
+                Debug.Log($"Cue {index}: activating object {cue.gameObject.name}");
+                cue.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log($"Cue {index}: deactivating object {cue.gameObject.name}");
+                cue.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
+        }
 
         // Delay before audio
         if (cue.audioDelay > 0f)
