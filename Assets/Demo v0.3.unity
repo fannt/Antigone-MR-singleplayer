@@ -459,11 +459,19 @@ MonoBehaviour:
   - cueName: Cue 4.1 figure
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 390132273}
-    duration: 20
+    gameObject: {fileID: 1711607017}
+    duration: 0
     audioDelay: 0
     goToCue: 1
     setActiveOnStart: 1
+  - cueName: Cue 5 remove car
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 1812644789}
+    duration: 0
+    audioDelay: 0
+    goToCue: 1
+    setActiveOnStart: 0
 --- !u!4 &184794330
 Transform:
   m_ObjectHideFlags: 0
@@ -3891,6 +3899,11 @@ PrefabInstance:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9176281889616400641, guid: 66d40221d132d04499855da9ce315f20, type: 3}
   m_PrefabInstance: {fileID: 1364055689}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1711607017 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 48b0cabaf9466441988d9698912ef77a, type: 3}
+  m_PrefabInstance: {fileID: 828132495}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1766750150
 PrefabInstance:
