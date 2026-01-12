@@ -432,22 +432,6 @@ MonoBehaviour:
     audioDelay: 20
     goToCue: 1
     setActiveOnStart: 1
-  - cueName: Cue 3.1 remove car
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 1219145791}
-    duration: 25
-    audioDelay: 0
-    goToCue: 1
-    setActiveOnStart: 0
-  - cueName: cue 3.2 add wracked car
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 1812644789}
-    duration: 0
-    audioDelay: 0
-    goToCue: 1
-    setActiveOnStart: 1
   - cueName: Cue 4
     audio: {fileID: 535571541}
     video: {fileID: 390132272}
@@ -467,7 +451,7 @@ MonoBehaviour:
   - cueName: Cue 5 remove car
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 1812644789}
+    gameObject: {fileID: 1219145791}
     duration: 0
     audioDelay: 0
     goToCue: 1
@@ -1978,7 +1962,6 @@ Transform:
   - {fileID: 380864265}
   - {fileID: 621793863}
   - {fileID: 1520162213}
-  - {fileID: 1812644788}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &984744782
@@ -4511,89 +4494,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1241364538}
   m_SourcePrefab: {fileID: 100100000, guid: 996bc95e1b6dfc847aead2de66dc4a91, type: 3}
---- !u!1001 &1812644787
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 984744781}
-    m_Modifications:
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.17
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.6368321
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.57007915
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.36478508
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.36930546
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8980549144392899874, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_Name
-      value: wracked-car-12_3_2025 - Cloud.segmented
-      objectReference: {fileID: 0}
-    - target: {fileID: 8980549144392899874, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: -4216948427090074523, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
---- !u!4 &1812644788 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -364223573239433514, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-  m_PrefabInstance: {fileID: 1812644787}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1812644789 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8980549144392899874, guid: 869b43c1e12904d4bb9fae5efa71fe74, type: 3}
-  m_PrefabInstance: {fileID: 1812644787}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1820850958 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8306700922104627377, guid: 66d40221d132d04499855da9ce315f20, type: 3}
