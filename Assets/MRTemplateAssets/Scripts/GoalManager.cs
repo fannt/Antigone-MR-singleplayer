@@ -117,7 +117,7 @@ namespace UnityEngine.XR.Templates.MR
             }
 
             if (m_FeatureController != null)
-                m_FeatureController.TogglePassthrough(false);
+                m_FeatureController.TogglePassthrough(true);
 
             if (m_LearnButton != null)
             {
