@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Video;
 
 [System.Serializable]
@@ -13,6 +14,8 @@ public class Cue
     public float audioDelay = 0f;        // delay before audio starts
     public bool goToCue = false;     // automatically trigger next cue when done
     public bool setActiveOnStart = true; // true = activate on start, false = deactivate on start
+    public UnityEvent onStart;
+    public UnityEvent onEnd;
 }
 
 public class CueController : MonoBehaviour
@@ -63,6 +66,10 @@ public class CueController : MonoBehaviour
         Cue cue = cues[index];
         cueRunning = true;
         Debug.Log($"Cue {index} START: {cue.cueName}");
+        if (cue.onStart != null)
+        {
+            cue.onStart.Invoke();
+        }
 
         if (cue.gameObject != null)
         {
@@ -108,6 +115,10 @@ public class CueController : MonoBehaviour
 
         Debug.Log($"Cue {index} END: {cue.cueName}");
         cueRunning = false;
+        if (cue.onEnd != null)
+        {
+            cue.onEnd.Invoke();
+        }
 
         if (runSequentialy)
         {
