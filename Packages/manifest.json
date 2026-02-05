@@ -3,11 +3,13 @@
     {
       "name": "Keijiro",
       "url": "https://registry.npmjs.com",
-      "scopes": [ "jp.keijiro" ]
+      "scopes": [
+        "jp.keijiro"
+      ]
     }
   ],
   "dependencies": {
-    "jp.keijiro.pcx": "1.0.1",
+    "com.buildingvolumes.geometry_sequence_player": "https://github.com/BuildingVolumes/Geometry_Sequence_Player_Package.git",
     "com.unity.feature.development": "1.0.2",
     "com.unity.inputsystem": "1.14.2",
     "com.unity.learn.iet-framework": "5.0.2",
@@ -24,6 +26,7 @@
     "com.unity.xr.management": "4.5.3",
     "com.unity.xr.meta-openxr": "2.2.1",
     "com.unity.xr.openxr": "1.16.0",
+    "jp.keijiro.pcx": "1.0.1",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",

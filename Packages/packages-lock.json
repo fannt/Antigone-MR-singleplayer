@@ -1,5 +1,16 @@
 {
   "dependencies": {
+    "com.buildingvolumes.geometry_sequence_player": {
+      "version": "https://github.com/BuildingVolumes/Geometry_Sequence_Player_Package.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.jobs": "0.70.0-preview.7",
+        "com.unity.timeline": "1.6.4",
+        "com.unity.mathematics": "1.2.1"
+      },
+      "hash": "8e6c2da2e01a5ee62e1d9866c66d5f117e4ec57d"
+    },
     "com.unity.burst": {
       "version": "1.8.25",
       "depth": 2,
@@ -73,6 +84,15 @@
       "source": "registry",
       "dependencies": {
         "com.unity.modules.uielements": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.jobs": {
+      "version": "0.70.0-preview.7",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.collections": "1.4.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -222,6 +242,18 @@
       "dependencies": {
         "com.unity.test-framework": "1.0.16",
         "com.unity.settings-manager": "1.0.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.timeline": {
+      "version": "1.8.9",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.director": "1.0.0",
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
