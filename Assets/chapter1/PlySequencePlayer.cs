@@ -6,10 +6,10 @@ public class PlySequencePlayer : MonoBehaviour
     public float fps = 24f;
 
     [Header("Editor Populate Settings")]
-    public string framePrefix = "video-trial-1-frame-";
+    public string framePrefix = "0000";
     public int startFrame = 0;
     public int endFrame = 300;
-    public string assetsFolder = "Assets/Resources/chapter1/video-trial-1/";
+    public string assetsFolder = "Assets/Resources/chapter1/video-flee-1/";
 
     public Mesh[] frames;
     MeshFilter mf;
