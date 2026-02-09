@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
+using BuildingVolumes.Player;
 
 public class StreamingAssetsToPersistentCopy : MonoBehaviour
 {
     [Header("Source / Destination")]
-    [Tooltip("Relative path inside StreamingAssets. Example: chapter1/video-trial-1")]
-    public string streamingAssetsRelativePath = "test";
+    [Tooltip("Relative path inside StreamingAssets. Example: chapter1/video-1")]
+    public string streamingAssetsRelativePath = "chapter1";
 
     [Tooltip("Relative path inside persistentDataPath. Leave empty to use the same as source.")]
     public string persistentRelativePath = "";
@@ -18,16 +20,22 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
     public bool copyOnStart = true;
     public bool overwriteExisting = false;
 
-    [Header("Optional: Hook after copy")]
-    public MonoBehaviour sequencePlayer; // Assign your player here if you want auto wiring.
-    public string setPathMethodName = "SetSequencePath"; // Method on your player to call with string path.
+    [Serializable]
+    public class StringEvent : UnityEvent<string> { }
+
+    [Header("Events")]
+    [Tooltip("Invoked when the copy step finishes (or is skipped) successfully. Argument is dstRoot.")]
+    public StringEvent onCopyCompleted;
+
+    [Tooltip("Invoked if one or more files failed to copy. Argument is dstRoot.")]
+    public StringEvent onCopyFailed;
 
     [Header("Numeric Fallback (no manifest)")]
     public bool useNumericFallback = true;
     public bool copySequenceJson = true;
     public string sequenceJsonName = "sequence.json";
     public int startIndex = 0;
-    public int endIndex = 383;
+    public int endIndex = 1024;
     public int numberPadding = 7; // 0000000.ply
     public string fileExtension = ".ply";
 
@@ -46,13 +54,13 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.LogWarning("[CopySeq] Enabled on " + name);
+        // Debug.LogWarning("[CopySeq] Enabled on " + name);
         TryAutoStart();
     }
 
     void Start()
     {
-        Debug.LogWarning("[CopySeq] Start on " + name);
+        // Debug.LogWarning("[CopySeq] Start on " + name);
         TryAutoStart();
     }
 
@@ -70,9 +78,9 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
         string srcRoot = CombinePath(Application.streamingAssetsPath, streamingAssetsRelativePath);
         string dstRoot = PersistentFullPath;
 
-        Debug.LogWarning($"[CopySeq] Platform={Application.platform} | streamingAssetsPath={Application.streamingAssetsPath} | persistentDataPath={Application.persistentDataPath}");
-        Debug.LogWarning($"[CopySeq] srcRoot={srcRoot}");
-        Debug.LogWarning($"[CopySeq] dstRoot={dstRoot}");
+        // Debug.LogWarning($"[CopySeq] Platform={Application.platform} | streamingAssetsPath={Application.streamingAssetsPath} | persistentDataPath={Application.persistentDataPath}");
+        // Debug.LogWarning($"[CopySeq] srcRoot={srcRoot}");
+        // Debug.LogWarning($"[CopySeq] dstRoot={dstRoot}");
 
         if (!Directory.Exists(dstRoot))
             Directory.CreateDirectory(dstRoot);
@@ -94,11 +102,11 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
         {
             if (!useNumericFallback)
             {
-                Debug.LogError("No manifest.txt found and numeric fallback disabled.");
+                // Debug.LogError("No manifest.txt found and numeric fallback disabled.");
                 yield break;
             }
 
-                Debug.LogWarning("Using numeric fallback copy: " + startIndex + ".." + endIndex);
+            // Debug.LogWarning("Using numeric fallback copy: " + startIndex + ".." + endIndex);
             if (copySequenceJson && !string.IsNullOrWhiteSpace(sequenceJsonName))
                 relativeFiles.Add(sequenceJsonName);
             for (int i = startIndex; i <= endIndex; i++)
@@ -108,11 +116,23 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
             }
         }
 
+        if (!overwriteExisting && relativeFiles.Count > 0)
+        {
+            string firstRel = relativeFiles[0].Replace("\\", "/");
+            string firstDst = Path.Combine(dstRoot, firstRel);
+            if (File.Exists(firstDst))
+            {
+                // Debug.LogWarning($"[CopySeq] First file exists, skipping copy: {firstDst}");
+                onCopyCompleted?.Invoke(dstRoot);
+                yield break;
+            }
+        }
+
         int copied = 0;
         int skipped = 0;
         int failed = 0;
         int totalPlanned = relativeFiles.Count;
-        Debug.LogWarning($"[CopySeq] Planned files: {totalPlanned} (overwriteExisting={overwriteExisting})");
+        // Debug.LogWarning($"[CopySeq] Planned files: {totalPlanned} (overwriteExisting={overwriteExisting})");
 
         for (int i = 0; i < relativeFiles.Count; i++)
         {
@@ -128,7 +148,7 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
             {
                 skipped++;
                 if ((i % 25) == 0)
-                    Debug.LogWarning($"[CopySeq] Progress {i + 1}/{totalPlanned} | copied={copied} skipped={skipped} failed={failed} (skipping existing)");
+                    // Debug.LogWarning($"[CopySeq] Progress {i + 1}/{totalPlanned} | copied={copied} skipped={skipped} failed={failed} (skipping existing)");
                 continue;
             }
 
@@ -136,14 +156,23 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
             yield return CopyStreamingFile(srcFile, dstFile, success => ok = success);
             if (ok) copied++; else failed++;
 
-            if ((i % 25) == 0)
-                Debug.LogWarning($"[CopySeq] Progress {i + 1}/{totalPlanned} | copied={copied} skipped={skipped} failed={failed}");
+            // if ((i % 25) == 0)
+                // Debug.LogWarning($"[CopySeq] Progress {i + 1}/{totalPlanned} | copied={copied} skipped={skipped} failed={failed}");
         }
 
-        Debug.LogWarning($"[CopySeq] DONE | planned={totalPlanned} copied={copied} skipped={skipped} failed={failed} | dstRoot={dstRoot}");
+        // Debug.LogWarning($"[CopySeq] DONE | planned={totalPlanned} copied={copied} skipped={skipped} failed={failed} | dstRoot={dstRoot}");
+        // Debug.LogWarning("Sequence copied to: " + dstRoot);
 
-        TrySetSequencePath(dstRoot);
-        Debug.LogWarning("Sequence copied to: " + dstRoot);
+        if (failed > 0)
+        {
+            // Debug.LogWarning($"[CopySeq] Invoking onCopyFailed (failed={failed})");
+            onCopyFailed?.Invoke(dstRoot);
+        }
+        else
+        {
+            // Debug.LogWarning("[CopySeq] Invoking onCopyCompleted");
+            onCopyCompleted?.Invoke(dstRoot);
+        }
     }
 
     IEnumerator CopyStreamingFile(string fromUrlOrPath, string toPath, Action<bool> onDone)
@@ -162,13 +191,13 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"[CopySeq] Write failed: {toPath} | {e.Message}");
+                    // Debug.LogError($"[CopySeq] Write failed: {toPath} | {e.Message}");
                     onDone?.Invoke(false);
                 }
             }
             else
             {
-                Debug.LogError($"[CopySeq] Download failed ({www.responseCode}): {fromUrlOrPath} => {toPath} | Error: {www.error}");
+                // Debug.LogError($"[CopySeq] Download failed ({www.responseCode}): {fromUrlOrPath} => {toPath} | Error: {www.error}");
                 onDone?.Invoke(false);
             }
         }
@@ -185,21 +214,6 @@ public class StreamingAssetsToPersistentCopy : MonoBehaviour
             else
                 onDone(false, null);
         }
-    }
-
-    void TrySetSequencePath(string path)
-    {
-        if (sequencePlayer == null || string.IsNullOrWhiteSpace(setPathMethodName))
-            return;
-
-        var method = sequencePlayer.GetType().GetMethod(setPathMethodName);
-        if (method == null)
-        {
-            Debug.LogWarning("Method not found: " + setPathMethodName + " on " + sequencePlayer.name);
-            return;
-        }
-
-        method.Invoke(sequencePlayer, new object[] { path });
     }
 
     static string CombinePath(string a, string b)

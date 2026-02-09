@@ -82,14 +82,13 @@ public class CueController : MonoBehaviour
             Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
         }
 
-        // Delay before audio
-        if (cue.audioDelay > 0f)
-            yield return new WaitForSeconds(cue.audioDelay);
-
         if (cue.audio != null)
         {
             Debug.Log($"Cue {index}: playing audio");
-            cue.audio.Play();
+            if (cue.audioDelay > 0f)
+                StartCoroutine(PlayAudioAfterDelay(cue.audio, cue.audioDelay));
+            else
+                cue.audio.Play();
         }
 
         if (cue.video != null)
@@ -99,11 +98,14 @@ public class CueController : MonoBehaviour
         }
 
         // Duration timer
-        float timer = cue.duration;
-        while (timer > 0f)
+        float timer = Mathf.Max(0f, cue.duration);
+        if (timer > 0f)
         {
-            timer -= Time.deltaTime;
-            yield return null;
+            while (timer > 0f)
+            {
+                timer -= Time.deltaTime;
+                yield return null;
+            }
         }
 
         Debug.Log($"Cue {index} END: {cue.cueName}");
@@ -118,5 +120,12 @@ public class CueController : MonoBehaviour
                 TriggerCue(nextCueIndex); // correctly trigger NEXT cue
             }
         }
+    }
+
+    private System.Collections.IEnumerator PlayAudioAfterDelay(AudioSource audio, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (audio != null)
+            audio.Play();
     }
 }
