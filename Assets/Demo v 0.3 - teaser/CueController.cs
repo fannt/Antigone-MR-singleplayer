@@ -1,0 +1,131 @@
+using UnityEngine;
+using UnityEngine.Video;
+
+[System.Serializable]
+public class Cue
+{
+    public string cueName = "Cue";
+    public AudioSource audio;
+    public VideoPlayer video;
+    public GameObject gameObject;
+    public float duration = 0f;   // duration in seconds for locking cue system
+
+    public float audioDelay = 0f;        // delay before audio starts
+    public bool goToNextCue = false;     // automatically trigger next cue when done
+    public bool toggleActiveTo = true; // true = activate on start, false = deactivate on start
+}
+
+public class CueController : MonoBehaviour
+{
+
+    public bool autoStart = false;
+    public bool runSequentialy = true;
+    public Cue[] cues;
+
+    private void Start()
+    {
+        if (autoStart)
+        {
+            TriggerCue(0);
+        }
+    }
+
+    private int nextCueIndex = 0;
+    private bool cueRunning = false;
+    private float cueTimer = 0f;
+
+    public void TriggerCue(int index)
+    {
+        Debug.Log($"TriggerCue({index}) called");
+        if (cueRunning)
+        {
+            Debug.Log("Cue blocked — another cue is running.");
+            return;
+        }
+
+        if (runSequentialy && index != nextCueIndex)
+        {
+            Debug.Log($"Skipping cue {index}, waiting for cue {nextCueIndex}");
+            return;
+        }
+
+        if (index < 0 || index >= cues.Length)
+        {
+            Debug.LogWarning("Cue index out of range");
+            return;
+        }
+
+        StartCoroutine(RunCue(index));
+    }
+
+    private System.Collections.IEnumerator RunCue(int index)
+    {
+        Cue cue = cues[index];
+        cueRunning = true;
+        Debug.Log($"Cue {index} START: {cue.cueName}");
+
+        if (cue.gameObject != null)
+        {
+            if (cue.toggleActiveTo)
+            {
+                Debug.Log($"Cue {index}: activating object {cue.gameObject.name}");
+                cue.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log($"Cue {index}: deactivating object {cue.gameObject.name}");
+                cue.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
+        }
+
+        if (cue.audio != null)
+        {
+            Debug.Log($"Cue {index}: playing audio");
+            if (cue.audioDelay > 0f)
+                StartCoroutine(PlayAudioAfterDelay(cue.audio, cue.audioDelay));
+            else
+                cue.audio.Play();
+        }
+
+        if (cue.video != null)
+        {
+            Debug.Log($"Cue {index}: playing video");
+            cue.video.Play();
+        }
+
+        // Duration timer
+        float timer = Mathf.Max(0f, cue.duration);
+        if (timer > 0f)
+        {
+            while (timer > 0f)
+            {
+                timer -= Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        Debug.Log($"Cue {index} END: {cue.cueName}");
+        cueRunning = false;
+
+        if (runSequentialy)
+        {
+            nextCueIndex++;
+
+            if (cue.goToNextCue && nextCueIndex < cues.Length)
+            {
+                TriggerCue(nextCueIndex); // correctly trigger NEXT cue
+            }
+        }
+    }
+
+    private System.Collections.IEnumerator PlayAudioAfterDelay(AudioSource audio, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (audio != null)
+            audio.Play();
+    }
+}

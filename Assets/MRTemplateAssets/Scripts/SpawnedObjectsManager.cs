@@ -12,6 +12,7 @@ namespace UnityEngine.XR.Templates.MR
     [RequireComponent(typeof(ObjectSpawner))]
     public class SpawnedObjectsManager : MonoBehaviour
     {
+        public GameObject objectToControl;
         [Tooltip("Spawn objects with a persistent anchor.")]
         [SerializeField]
         bool m_SpawnAsPersistentAnchor = true;
@@ -152,27 +153,38 @@ namespace UnityEngine.XR.Templates.MR
                 Destroy(spawnedObject.gameObject);
             }
         }
-
         /// <summary>
-        /// Deletes all anchors and clears the saved anchor data list.
-        /// This method is called when the Delete Anchors button is clicked from the UI.
+        /// Deletes all anchors (including your Control Object) and clears the list.
         /// </summary>
         public async void DeleteAnchors()
         {
-            m_AnchorText.text = "<b><u><align=center>- Deleted Persistent Anchors -</b></u></align>\n";
+            // 1. SAFELY DETACH YOUR CONTROL OBJECT
+            if (objectToControl != null)
+            {
+                // Unparent it so it doesn't get deleted with the anchor
+                objectToControl.transform.SetParent(null);
+                
+                // Optional: Reset it to a comfortable spawn position if you want
+                // objectToControl.transform.position = Camera.main.transform.position + Vector3.forward;
+            }
+
+            // 2. RUN THE STANDARD DELETION (This wipes the disk)
+            if (m_AnchorText) m_AnchorText.text = "<b><u><align=center>- Deleting Anchors -</b></u></align>\n";
+            
             await EraseAnchorsAsync();
 
+            // 3. UI FEEDBACK
             if (m_SaveAndLoadAnchorIdsToFile.SavedAnchorsData.Count != 0)
             {
-                m_AnchorText.text += "\n\n<align=center>Failed to delete all anchors.</align>\n\n";
+                if(m_AnchorText) m_AnchorText.text += "\n\n<align=center>Failed to delete all anchors.</align>\n\n";
                 foreach (var kvp in m_SaveAndLoadAnchorIdsToFile.SavedAnchorsData)
                 {
-                    m_AnchorText.text += $"GUID failed to remove: [{kvp.Key}]\n\n";
+                    if(m_AnchorText) m_AnchorText.text += $"GUID failed to remove: [{kvp.Key}]\n\n";
                 }
             }
             else
             {
-                m_AnchorText.text += "\n\n<align=center>All anchors deleted.</align>";
+                if(m_AnchorText) m_AnchorText.text += "\n\n<align=center>All anchors deleted.</align>";
             }
         }
 
@@ -195,15 +207,66 @@ namespace UnityEngine.XR.Templates.MR
             if (!m_AnchorManager.descriptor.supportsSaveAnchor)
             {
                 Debug.LogWarning("Save anchor is not supported on this device.", this);
-                m_AnchorText.text = "Save anchor is not supported on this device.";
+                if(m_AnchorText) m_AnchorText.text = "Save anchor is not supported on this device.";
                 return;
             }
-            // Clear existing anchors
-            await EraseAnchorsAsync();
 
-            // Save the current spawned anchors
-            m_AnchorText.text = "<b><u><align=center>- Saved Persistent Anchors -</b></u></align>\n";
+            // --- NEW EXTENSION LOGIC ---
+            if (objectToControl != null)
+            {
+                if(m_AnchorText) m_AnchorText.text = "<b><u><align=center>- Saving Single Object -</b></u></align>\n";
+                await SaveControlObjectAsync();
+                return; // Exit here, ignoring the old list logic
+            }
+            // ---------------------------
+
+            // Original logic fallback (clears and saves list)
+            await EraseAnchorsAsync();
+            if(m_AnchorText) m_AnchorText.text = "<b><u><align=center>- Saved Persistent Anchors -</b></u></align>\n";
             await SaveAchorsAsync();
+        }
+
+        // Internal dummy ID for your single object so the file system accepts it
+        private const int CONTROL_OBJECT_ID = 999; 
+
+        async Awaitable SaveControlObjectAsync()
+        {
+            // 1. Create Anchor at the object's CURRENT position
+            Pose pose = new Pose(objectToControl.transform.position, objectToControl.transform.rotation);
+            var result = await m_AnchorManager.TryAddAnchorAsync(pose);
+
+            if (!result.status.IsSuccess())
+            {
+                if(m_AnchorText) m_AnchorText.text += "Failed to create anchor.\n";
+                return;
+            }
+
+            ARAnchor newAnchor = result.value;
+
+            // 2. Parent your object to this new anchor
+            objectToControl.transform.SetParent(newAnchor.transform);
+            objectToControl.transform.localPosition = Vector3.zero;
+            objectToControl.transform.localRotation = Quaternion.identity;
+
+            // 3. Save to Quest Storage
+            var saveResult = await m_AnchorManager.TrySaveAnchorAsync(newAnchor);
+
+            if (saveResult.status.IsError())
+            {
+                if(m_AnchorText) m_AnchorText.text += $"Save Failed: {saveResult.status}\n";
+                return;
+            }
+
+            // 4. Save to the Template's JSON File
+            SerializableGuid guid = saveResult.value;
+            
+            // Ensure helper is initialized
+            m_SaveAndLoadAnchorIdsToFile ??= new SaveAndLoadAnchorDataToFile();
+            
+            // We pass 'CONTROL_OBJECT_ID' (999) as the index so we know it's this special object later
+            await m_SaveAndLoadAnchorIdsToFile.SaveAnchorIdAsync(guid, CONTROL_OBJECT_ID);
+
+            if(m_AnchorText) m_AnchorText.text += $"SUCCESS! Saved ID: {guid}\n";
         }
 
         // This method is called when the Object Selector Dropdown value changes.
@@ -333,39 +396,79 @@ namespace UnityEngine.XR.Templates.MR
             }
         }
 
-        // This method creates a new object for the loaded anchor reference.
-        void CreateObjectForLoadedAnchor(ARAnchor newAnchor, SerializableGuid guid, int spawnId)
+        // REPLACEMENT METHOD
+void CreateObjectForLoadedAnchor(ARAnchor newAnchor, SerializableGuid guid, int spawnId)
+{
+    // -----------------------------------------------------------------------
+    // 1. CHECK FOR YOUR CONTROL OBJECT (ID 999)
+    // -----------------------------------------------------------------------
+    if (spawnId == 999) 
+    {
+        if (objectToControl != null)
         {
-            int nonZeroIndex = spawnId < 0 ? Random.Range(0, m_Spawner.objectPrefabs.Count) : spawnId;
-            GameObject respawnedObject = Instantiate(m_Spawner.objectPrefabs[nonZeroIndex], newAnchor.transform);
-            respawnedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            Debug.Log($"<color=green>Found Saved Anchor for Control Object! GUID: {guid}</color>");
 
-            // Create new SpawnedObjectHelper object to store the new anchor reference.
-            SpawnedObjectHelper spawnedObjectHelper = new SpawnedObjectHelper
-            {
-                gameObject = respawnedObject,
-                attachedAnchor = newAnchor,
-                spawnObjectIdx = spawnId,
-                isPersistent = true,
-                spawnWithAnchor = true,
-                persistentGuid = guid
-            };
+            // A. Snap the object to the loaded anchor
+            objectToControl.transform.SetParent(newAnchor.transform);
+            objectToControl.transform.localPosition = Vector3.zero;
+            objectToControl.transform.localRotation = Quaternion.identity;
+            
+            // B. Ensure it is visible
+            objectToControl.SetActive(true);
 
-            bool anchorAlreadyExists = false;
-            // Find and replace the SpawnedObjectHelper in the list with the new reference.
-            for (int i = 0; i < m_SpawnedObjects.Count; i++)
-            {
-                if (m_SpawnedObjects[i].persistentGuid == guid)
-                {
-                    m_SpawnedObjects[i] = spawnedObjectHelper;
-                    anchorAlreadyExists = true;
-                    break;
-                }
-            }
-
-            if (!anchorAlreadyExists)
-                m_SpawnedObjects.Add(spawnedObjectHelper);
+            // C. Stop here. We don't want to create a helper struct for this 
+            //    or add it to the spawned list, because it's not a spawned prefab.
+            return; 
         }
+        else
+        {
+            Debug.LogError("Loaded ID 999, but 'objectToControl' is not assigned in the Inspector!");
+            return;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // 2. ORIGINAL TEMPLATE LOGIC (For other spawned objects)
+    // -----------------------------------------------------------------------
+    
+    // Safety check: Ensure the index is valid for the list
+    int nonZeroIndex = spawnId < 0 ? Random.Range(0, m_Spawner.objectPrefabs.Count) : spawnId;
+
+    if (m_Spawner.objectPrefabs == null || nonZeroIndex >= m_Spawner.objectPrefabs.Count)
+    {
+        Debug.LogWarning($"Skipping spawn. Index {nonZeroIndex} is invalid or list is empty.");
+        return;
+    }
+
+    GameObject respawnedObject = Instantiate(m_Spawner.objectPrefabs[nonZeroIndex], newAnchor.transform);
+    respawnedObject.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+    // Create new SpawnedObjectHelper object to store the new anchor reference.
+    SpawnedObjectHelper spawnedObjectHelper = new SpawnedObjectHelper
+    {
+        gameObject = respawnedObject,
+        attachedAnchor = newAnchor,
+        spawnObjectIdx = spawnId,
+        isPersistent = true,
+        spawnWithAnchor = true,
+        persistentGuid = guid
+    };
+
+    bool anchorAlreadyExists = false;
+    // Find and replace the SpawnedObjectHelper in the list with the new reference.
+    for (int i = 0; i < m_SpawnedObjects.Count; i++)
+    {
+        if (m_SpawnedObjects[i].persistentGuid == guid)
+        {
+            m_SpawnedObjects[i] = spawnedObjectHelper;
+            anchorAlreadyExists = true;
+            break;
+        }
+    }
+
+    if (!anchorAlreadyExists)
+        m_SpawnedObjects.Add(spawnedObjectHelper);
+}
 
         // Saves all anchors from the spawned objects list.
         async Awaitable SaveAchorsAsync(bool updateText = true)
