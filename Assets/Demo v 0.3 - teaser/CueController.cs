@@ -15,18 +15,24 @@ public class Cue
     public bool toggleActiveTo = true; // true = activate on start, false = deactivate on start
 }
 
+public interface ICueTriggeredReceiver
+{
+    void OnCueTriggered(Cue cue);
+}
+
 public class CueController : MonoBehaviour
 {
 
     public bool autoStart = false;
     public bool runSequentialy = true;
+    public int startingCue = 0;   // starting cue index
     public Cue[] cues;
 
     private void Start()
     {
         if (autoStart)
         {
-            TriggerCue(0);
+            TriggerCue(startingCue);
         }
     }
 
@@ -76,6 +82,8 @@ public class CueController : MonoBehaviour
                 Debug.Log($"Cue {index}: deactivating object {cue.gameObject.name}");
                 cue.gameObject.SetActive(false);
             }
+
+            NotifyCueReceivers(cue);
         }
         else
         {
@@ -119,6 +127,23 @@ public class CueController : MonoBehaviour
             {
                 TriggerCue(nextCueIndex); // correctly trigger NEXT cue
             }
+        }
+    }
+
+    private void NotifyCueReceivers(Cue cue)
+    {
+        if (cue.gameObject == null)
+            return;
+
+        var receivers = cue.gameObject.GetComponentsInChildren<ICueTriggeredReceiver>(true);
+        if (receivers == null || receivers.Length == 0)
+            return;
+
+        for (int i = 0; i < receivers.Length; i++)
+        {
+            var receiver = receivers[i];
+            if (receiver != null)
+                receiver.OnCueTriggered(cue);
         }
     }
 
