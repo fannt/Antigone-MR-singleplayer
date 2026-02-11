@@ -306,9 +306,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: d655f469fda5b4c6999d0dd62ffc6f82, type: 3}
+  m_Resource: {fileID: 8300000, guid: 36f0dae723cc94e8a90ac80235edf1a0, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.485
+  m_Volume: 0.117
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -538,8 +538,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CueController
   autoStart: 1
   runSequentialy: 1
-  startingCue: 0
+  startingCue: 14
   cues:
+  - cueName: Flee dialogue preload
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 271281997}
+    geometryAction: 1
+    duration: 0
+    audioDelay: 0
+    goToNextCue: 1
+    toggleActiveTo: 0
   - cueName: intro delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -550,6 +560,16 @@ MonoBehaviour:
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+  - cueName: intro cue
+    audio: {fileID: 80018081}
+    video: {fileID: 0}
+    gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 160
+    audioDelay: 0
+    goToNextCue: 1
+    toggleActiveTo: 0
   - cueName: car
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -566,7 +586,7 @@ MonoBehaviour:
     gameObject: {fileID: 380864266}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 2
+    duration: 10
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
@@ -606,7 +626,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 0
+    duration: 5
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
@@ -626,7 +646,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 0
+    duration: 8
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
@@ -637,6 +657,16 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 11
+    audioDelay: 0
+    goToNextCue: 1
+    toggleActiveTo: 0
+  - cueName: ipad off
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 380864266}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 0
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
@@ -656,94 +686,24 @@ MonoBehaviour:
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 15
+    duration: 45
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
   - cueName: chapter 2 video 2
     audio: {fileID: 0}
-    video: {fileID: 0}
+    video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 15
+    duration: 45
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
-  - cueName: chapter 2 video 3
+  - cueName: chapter 2 video off
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 2
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 3
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 15
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 5
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 5
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 6
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 15
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 7
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 15
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 8
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 10
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 9
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 15
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 10
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
+    gameObject: {fileID: 60033774}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 15
@@ -1878,10 +1838,10 @@ MonoBehaviour:
   minSpawnCount: 3
   maxSpawnCount: 8
   minSeparationDegrees: 15
-  spawnInterval: 3.8
+  spawnInterval: 9
   startDistance: 20
-  minDistance: 3
-  distanceStep: 2
+  minDistance: 5
+  distanceStep: 1
   shrinkPerInstance: 1
   resetDistanceOnEnable: 0
   clips:
@@ -1894,7 +1854,7 @@ MonoBehaviour:
   randomizePerInstance: 1
   uniqueClipsPerSpawn: 1
   playOnSpawn: 1
-  spawnParent: {fileID: 0}
+  spawnParent: {fileID: 60033775}
   destroyClonesOnDisable: 1
   fadeInDuration: 0.35
   autoAddCanvasGroup: 1
@@ -2412,75 +2372,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 48b0cabaf9466441988d9698912ef77a, type: 3}
   m_PrefabInstance: {fileID: 828132495}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &836035178
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 984744781}
-    m_Modifications:
-    - target: {fileID: 206595260629764052, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_PermittedDisplacementAxes
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1060243933316379515, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_Name
-      value: Interactables Sample
-      objectReference: {fileID: 0}
-    - target: {fileID: 1060243933316379515, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.0782001
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -3.27522
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6263395680885754751, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-      propertyPath: m_PermittedDisplacementAxes
-      value: -1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
 --- !u!1 &867883069
 GameObject:
   m_ObjectHideFlags: 0
@@ -2667,6 +2558,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1547277068}
   - {fileID: 1213254254}
   - {fileID: 1267584202}
   - {fileID: 80018080}
@@ -2674,8 +2566,6 @@ Transform:
   - {fileID: 228395581}
   - {fileID: 271281996}
   - {fileID: 1127004003}
-  - {fileID: 1547277068}
-  - {fileID: 1802622806}
   - {fileID: 380864265}
   - {fileID: 1520162213}
   m_Father: {fileID: 0}
@@ -3178,7 +3068,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.954
+      value: 0.97
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4137,7 +4027,7 @@ GameObject:
   - component: {fileID: 1547277066}
   - component: {fileID: 1547277067}
   m_Layer: 0
-  m_Name: init-trigger cue 1
+  m_Name: 'init-trigger cue 1 [chair]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4150,7 +4040,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1547277065}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70a8e7c49e7c34465b7a76163cabfc6d, type: 3}
   m_Name: 
@@ -4857,11 +4747,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1241364538}
   m_SourcePrefab: {fileID: 100100000, guid: 996bc95e1b6dfc847aead2de66dc4a91, type: 3}
---- !u!4 &1802622806 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2991896912978869755, guid: 6821e1b7f44d8c44b8a2ba02f37309d5, type: 3}
-  m_PrefabInstance: {fileID: 836035178}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1820850958 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8306700922104627377, guid: 66d40221d132d04499855da9ce315f20, type: 3}

@@ -106,7 +106,14 @@ public class CueController : MonoBehaviour
             Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
         }
 
-        TriggerGeometryAction(cue, index);
+        try
+        {
+            TriggerGeometryAction(cue, index);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Cue {index}: geometry action failed: {e.Message}");
+        }
 
         if (cue.audio != null)
         {
@@ -157,6 +164,7 @@ public class CueController : MonoBehaviour
         switch (cue.geometryAction)
         {
             case GeometryCueAction.Preload:
+                EnsureGeometryPlayerActive(player);
                 EnsureGeometryPlayerLoaded(player, cueIndex);
                 player.Pause();
                 if (player.IsInitialized())
@@ -164,6 +172,7 @@ public class CueController : MonoBehaviour
                 player.Hide();
                 break;
             case GeometryCueAction.Play:
+                EnsureGeometryPlayerActive(player);
                 if (EnsureGeometryPlayerLoaded(player, cueIndex))
                 {
                     player.Show();
@@ -171,6 +180,7 @@ public class CueController : MonoBehaviour
                 }
                 break;
             case GeometryCueAction.PlayFromStart:
+                EnsureGeometryPlayerActive(player);
                 if (EnsureGeometryPlayerLoaded(player, cueIndex))
                 {
                     player.Show();
@@ -184,6 +194,7 @@ public class CueController : MonoBehaviour
                 player.Stop();
                 break;
             case GeometryCueAction.Show:
+                EnsureGeometryPlayerActive(player);
                 player.Show();
                 break;
             case GeometryCueAction.Hide:
@@ -200,10 +211,18 @@ public class CueController : MonoBehaviour
         Debug.Log($"Cue {cueIndex}: geometry action {cue.geometryAction} on {player.name}");
     }
 
+    private static void EnsureGeometryPlayerActive(GeometrySequencePlayer player)
+    {
+        if (player != null && !player.gameObject.activeSelf)
+            player.gameObject.SetActive(true);
+    }
+
     private bool EnsureGeometryPlayerLoaded(GeometrySequencePlayer player, int cueIndex)
     {
         if (player == null)
             return false;
+
+        player.SetupGeometryStream();
 
         if (player.IsInitialized())
             return true;
