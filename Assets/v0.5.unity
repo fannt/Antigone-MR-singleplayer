@@ -544,6 +544,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 5
     audioDelay: 0
     goToNextCue: 1
@@ -552,6 +554,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 1213254253}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 11
     audioDelay: 0
     goToNextCue: 1
@@ -560,6 +564,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 380864267}
     gameObject: {fileID: 380864266}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 2
     audioDelay: 0
     goToNextCue: 1
@@ -568,6 +574,8 @@ MonoBehaviour:
     audio: {fileID: 1267584203}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 11
     audioDelay: 0
     goToNextCue: 1
@@ -576,6 +584,8 @@ MonoBehaviour:
     audio: {fileID: 867883071}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 0
     audioDelay: 0
     goToNextCue: 1
@@ -584,6 +594,8 @@ MonoBehaviour:
     audio: {fileID: 228395582}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 0
     audioDelay: 0
     goToNextCue: 1
@@ -592,6 +604,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 0
     audioDelay: 0
     goToNextCue: 1
@@ -599,15 +613,19 @@ MonoBehaviour:
   - cueName: Flee dialogue
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 1127004002}
+    gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 271281997}
+    geometryAction: 2
     duration: 215
     audioDelay: 0
     goToNextCue: 1
-    toggleActiveTo: 1
+    toggleActiveTo: 0
   - cueName: Chapter 1 cue delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 0}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 0
     audioDelay: 0
     goToNextCue: 1
@@ -616,6 +634,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 1213254253}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 11
     audioDelay: 0
     goToNextCue: 1
@@ -624,6 +644,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 1127004002}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 0
     audioDelay: 0
     goToNextCue: 1
@@ -632,6 +654,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 15
     audioDelay: 0
     goToNextCue: 1
@@ -640,6 +664,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 15
     audioDelay: 0
     goToNextCue: 1
@@ -648,6 +674,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 2
     audioDelay: 0
     goToNextCue: 1
@@ -656,6 +684,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 15
     audioDelay: 0
     goToNextCue: 1
@@ -664,6 +694,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 5
     audioDelay: 0
     goToNextCue: 1
@@ -672,6 +704,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 15
     audioDelay: 0
     goToNextCue: 1
@@ -680,14 +714,8 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
-    duration: 15
-    audioDelay: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-  - cueName: chapter 2 video 7
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 15
     audioDelay: 0
     goToNextCue: 1
@@ -696,7 +724,29 @@ MonoBehaviour:
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
     duration: 10
+    audioDelay: 0
+    goToNextCue: 1
+    toggleActiveTo: 1
+  - cueName: chapter 2 video 9
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 15
+    audioDelay: 0
+    goToNextCue: 1
+    toggleActiveTo: 1
+  - cueName: chapter 2 video 10
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 15
     audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
@@ -760,7 +810,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c7e4d355e8b504976be2102defaf33fe, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.83
+  m_Volume: 0.755
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -804,7 +854,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.977
+      value: 0.96
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -819,7 +869,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.022222223
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1055,7 +1105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: buildingvolumes.geometry_sequence_player::BuildingVolumes.Player.GeometrySequencePlayer
   relativePath: chapter_1
   pathRelation: 2
-  playAtStart: 1
+  playAtStart: 0
   loopPlay: 0
   playbackFPS: 24
   playbackEvents:
@@ -1088,7 +1138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6608345611592121030, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9053310632142346944, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
       propertyPath: m_Pivot.x
@@ -1191,16 +1241,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9053310632142346944, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 481274422}
+    - targetCorrespondingSourceObject: {fileID: 9053310632142346944, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2074218162}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6608345611592121030, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 380864272}
-    - targetCorrespondingSourceObject: {fileID: 6608345611592121030, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 380864274}
-    - targetCorrespondingSourceObject: {fileID: 6608345611592121030, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 380864273}
     - targetCorrespondingSourceObject: {fileID: 6608345611592121030, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 380864281}
@@ -1226,57 +1270,6 @@ VideoPlayer:
   m_CorrespondingSourceObject: {fileID: 1675212246467271995, guid: 99422ad8be03a41b98491bd04a1f331c, type: 3}
   m_PrefabInstance: {fileID: 380864264}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &380864272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 380864266}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 841a35449607e4eb68c6eeec640053d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GazeTrigger
-  controller: {fileID: 184794329}
-  cueIndexToTrigger: 2
-  gazeTime: 2
---- !u!114 &380864273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 380864266}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70a8e7c49e7c34465b7a76163cabfc6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CueTrigger
-  controller: {fileID: 184794329}
-  cueNumber: 2
-  shouldHideTriggerObject: 1
---- !u!65 &380864274
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 380864266}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &380864279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1313,7 +1306,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
-  m_Colliders: []
+  m_Colliders:
+  - {fileID: 2074218163}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -1626,7 +1620,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420261668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -173}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1634,7 +1628,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -197, y: 275}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &465102248 stripped
@@ -1690,7 +1684,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1677408481}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -9}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1698,7 +1692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 284, y: 175}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &522728844 stripped
@@ -1877,14 +1871,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chapter2HDPlayerSpawner
   spawnOnEnable: 0
   spawnOnCue: 1
-  audience: {fileID: 984744781}
+  audience: {fileID: 1766750198}
   heightOffset: 1
   faceAudience: 1
   faceYawOffset: 180
-  minSpawnCount: 2
-  maxSpawnCount: 5
+  minSpawnCount: 3
+  maxSpawnCount: 8
   minSeparationDegrees: 15
-  spawnInterval: 1.64
+  spawnInterval: 3.8
   startDistance: 20
   minDistance: 3
   distanceStep: 2
@@ -2576,7 +2570,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.887
+      value: 0.96
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2591,7 +2585,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.08888889
+      value: 0.022222223
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2905,7 +2899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1127004003
 Transform:
   m_ObjectHideFlags: 0
@@ -3140,7 +3134,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: d365c5bd1af114154b89a2d97d8e38ff, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.267
+  m_Volume: 0.222
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4766,6 +4760,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 173eb9f39e31f45099045a6a659478f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementController
+--- !u!4 &1766750198 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5632266133985503989, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+  m_PrefabInstance: {fileID: 1766750150}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1800359842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5289,6 +5288,63 @@ Transform:
   - {fileID: 522728844}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2074218161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2074218162}
+  - component: {fileID: 2074218163}
+  m_Layer: 5
+  m_Name: GrabCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2074218162
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074218161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 380864265}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 604, y: 880}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!65 &2074218163
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074218161}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2120083480 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7980650391616948280, guid: 66d40221d132d04499855da9ce315f20, type: 3}

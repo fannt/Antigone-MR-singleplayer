@@ -1,5 +1,19 @@
 using UnityEngine;
 using UnityEngine.Video;
+using BuildingVolumes.Player;
+
+public enum GeometryCueAction
+{
+    None,
+    Preload,
+    Play,
+    PlayFromStart,
+    Pause,
+    Stop,
+    Show,
+    Hide,
+    PauseRewindHide
+}
 
 [System.Serializable]
 public class Cue
@@ -8,6 +22,8 @@ public class Cue
     public AudioSource audio;
     public VideoPlayer video;
     public GameObject gameObject;
+    public GeometrySequencePlayer geometryPlayer;
+    public GeometryCueAction geometryAction = GeometryCueAction.None;
     public float duration = 0f;   // duration in seconds for locking cue system
 
     public float audioDelay = 0f;        // delay before audio starts
@@ -90,6 +106,8 @@ public class CueController : MonoBehaviour
             Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
         }
 
+        TriggerGeometryAction(cue, index);
+
         if (cue.audio != null)
         {
             Debug.Log($"Cue {index}: playing audio");
@@ -128,6 +146,76 @@ public class CueController : MonoBehaviour
                 TriggerCue(nextCueIndex); // correctly trigger NEXT cue
             }
         }
+    }
+
+    private void TriggerGeometryAction(Cue cue, int cueIndex)
+    {
+        if (cue == null || cue.geometryPlayer == null || cue.geometryAction == GeometryCueAction.None)
+            return;
+
+        var player = cue.geometryPlayer;
+        switch (cue.geometryAction)
+        {
+            case GeometryCueAction.Preload:
+                EnsureGeometryPlayerLoaded(player, cueIndex);
+                player.Pause();
+                if (player.IsInitialized())
+                    player.GoToFrame(0);
+                player.Hide();
+                break;
+            case GeometryCueAction.Play:
+                if (EnsureGeometryPlayerLoaded(player, cueIndex))
+                {
+                    player.Show();
+                    player.Play();
+                }
+                break;
+            case GeometryCueAction.PlayFromStart:
+                if (EnsureGeometryPlayerLoaded(player, cueIndex))
+                {
+                    player.Show();
+                    player.PlayFromStart();
+                }
+                break;
+            case GeometryCueAction.Pause:
+                player.Pause();
+                break;
+            case GeometryCueAction.Stop:
+                player.Stop();
+                break;
+            case GeometryCueAction.Show:
+                player.Show();
+                break;
+            case GeometryCueAction.Hide:
+                player.Hide();
+                break;
+            case GeometryCueAction.PauseRewindHide:
+                player.Pause();
+                if (player.IsInitialized())
+                    player.GoToFrame(0);
+                player.Hide();
+                break;
+        }
+
+        Debug.Log($"Cue {cueIndex}: geometry action {cue.geometryAction} on {player.name}");
+    }
+
+    private bool EnsureGeometryPlayerLoaded(GeometrySequencePlayer player, int cueIndex)
+    {
+        if (player == null)
+            return false;
+
+        if (player.IsInitialized())
+            return true;
+
+        bool loaded = player.LoadCurrentSequence(false, true);
+        if (!loaded)
+        {
+            Debug.LogWarning($"Cue {cueIndex}: failed to load geometry sequence on {player.name}");
+            return false;
+        }
+
+        return player.IsInitialized();
     }
 
     private void NotifyCueReceivers(Cue cue)
