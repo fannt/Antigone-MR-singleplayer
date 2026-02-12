@@ -24,6 +24,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
     public int maxSpawnCount = 3;
     public float minSeparationDegrees = 15f;
     public float spawnInterval = 0.35f;
+    public bool firstInFrontOfAudience = false;
 
     [Header("Distance")]
     public float startDistance = 5f;
@@ -51,17 +52,13 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
     public bool autoRefreshClips = true;
 
     private static bool s_IsSpawning = false;
-    private const float kMinSeparationDegrees = 15f;
     private const float kMinSeparationMeters = 0.8f;
-    private const float kSpawnInterval = 0.35f;
-    private const bool kUniqueClipsPerSpawn = true;
-    private const float kFadeInDuration = 0.35f;
-    private const bool kAutoAddCanvasGroup = true;
     private float _currentDistance = 0f;
     private int _lastSpawnFrame = -1;
     private readonly List<GameObject> _clones = new List<GameObject>();
     private Quaternion _lookOffset = Quaternion.identity;
     private Coroutine _spawnRoutine;
+    private Cue _pendingCue;
 
     private void Awake()
     {
@@ -74,7 +71,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
     private void OnEnable()
     {
         if (spawnOnEnable)
-            TrySpawn();
+            TrySpawn(null);
     }
 
     private void OnDisable()
@@ -88,21 +85,15 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         if (!spawnOnCue)
             return;
 
-        TrySpawn();
+        TrySpawn(cue);
     }
 
     public void Spawn()
     {
-        if (s_IsSpawning)
-            return;
-
-        if (_spawnRoutine != null)
-            StopCoroutine(_spawnRoutine);
-
-        _spawnRoutine = StartCoroutine(SpawnSequence());
+        TrySpawn(null);
     }
 
-    private void TrySpawn()
+    private void TrySpawn(Cue cue)
     {
         if (!isActiveAndEnabled)
             return;
@@ -119,7 +110,11 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         if (_lastSpawnFrame == Time.frameCount)
             return;
 
-        Spawn();
+        if (_spawnRoutine != null)
+            StopCoroutine(_spawnRoutine);
+
+        _pendingCue = cue;
+        _spawnRoutine = StartCoroutine(SpawnSequence());
     }
 
     private System.Collections.IEnumerator SpawnSequence()
@@ -130,17 +125,73 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         if (resetDistanceOnEnable || _currentDistance <= 0f)
             _currentDistance = startDistance;
 
+        var target = ResolveAudience();
+        if (target != null)
+            yield return SpawnWave(target, BuildWaveSettings(_pendingCue));
+
+        s_IsSpawning = false;
+        _spawnRoutine = null;
+        _pendingCue = null;
+    }
+
+    private struct WaveSettings
+    {
+        public int minCount;
+        public int maxCount;
+        public float distance;
+        public float minSeparation;
+        public float perSpawnDelay;
+        public float fadeDuration;
+        public bool equalDistribution;
+        public bool uniqueClips;
+        public bool firstInFront;
+    }
+
+    private WaveSettings BuildWaveSettings(Cue cue)
+    {
+        var settings = new WaveSettings
+        {
+            minCount = Mathf.Max(1, minSpawnCount),
+            maxCount = Mathf.Max(minSpawnCount, maxSpawnCount),
+            distance = _currentDistance,
+            minSeparation = minSeparationDegrees,
+            perSpawnDelay = spawnInterval,
+            fadeDuration = fadeInDuration,
+            equalDistribution = false,
+            uniqueClips = uniqueClipsPerSpawn,
+            firstInFront = firstInFrontOfAudience
+        };
+
+        if (cue != null && cue.overrideSpawnerWave)
+        {
+            settings.minCount = Mathf.Max(1, cue.waveMinCount);
+            settings.maxCount = Mathf.Max(settings.minCount, cue.waveMaxCount);
+            settings.distance = Mathf.Max(minDistance, cue.waveDistance);
+            settings.minSeparation = cue.waveMinSeparationDegrees;
+            settings.perSpawnDelay = cue.waveSpawnInterval;
+            settings.fadeDuration = cue.waveFadeInDuration;
+            settings.equalDistribution = cue.waveEqualDistribution;
+            settings.uniqueClips = cue.waveUniqueClips;
+            settings.firstInFront = cue.waveFirstInFrontOfAudience;
+        }
+
+        return settings;
+    }
+
+    private System.Collections.IEnumerator SpawnWave(Transform target, WaveSettings wave)
+    {
         ClearClones();
 
-        var target = ResolveAudience();
-        var count = Mathf.Clamp(Random.Range(minSpawnCount, maxSpawnCount + 1), 1, 10);
-        var minBatchDistance = shrinkPerInstance
-            ? Mathf.Max(minDistance, _currentDistance - distanceStep * (count - 1))
-            : _currentDistance;
-        var minAngle = Mathf.Max(kMinSeparationDegrees, MinAngleForArc(kMinSeparationMeters, minBatchDistance));
-        var angles = GenerateAngles(count, Mathf.Clamp(minAngle, 0f, 180f));
-        var clipsForSpawn = BuildClipList(count);
-
+        int count = Mathf.Clamp(Random.Range(wave.minCount, wave.maxCount + 1), 1, 10);
+        float minBatchDistance = shrinkPerInstance
+            ? Mathf.Max(minDistance, wave.distance - distanceStep * (count - 1))
+            : wave.distance;
+        float minAngle = Mathf.Max(wave.minSeparation, MinAngleForArc(kMinSeparationMeters, minBatchDistance));
+        float firstAngle = GetAudienceForwardAngle(target);
+        var angles = wave.equalDistribution
+            ? GenerateEqualAngles(count, wave.firstInFront ? firstAngle : (float?)null)
+            : GenerateAngles(count, Mathf.Clamp(minAngle, 0f, 180f), wave.firstInFront ? firstAngle : (float?)null);
+        var clipsForSpawn = BuildClipList(count, wave.uniqueClips);
         var parent = spawnParent != null ? spawnParent : transform.parent;
 
         for (int i = 0; i < count; i++)
@@ -155,25 +206,20 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
                 _clones.Add(instance);
             }
 
-            var position = GetSpawnPosition(target, _currentDistance, angles[i]);
+            float distanceForInstance = shrinkPerInstance
+                ? Mathf.Max(minDistance, wave.distance - (distanceStep * i))
+                : wave.distance;
+            var position = GetSpawnPosition(target, distanceForInstance, angles[i]);
             var rotation = GetSpawnRotation(target, position);
             ApplyTransform(instance.transform, position, rotation);
-
             ApplyVideo(instance, clipsForSpawn[i]);
-            StartFadeIn(instance);
+            StartFadeIn(instance, wave.fadeDuration);
 
-            if (shrinkPerInstance)
-                _currentDistance = Mathf.Max(minDistance, _currentDistance - distanceStep);
-
-            if (i < count - 1 && kSpawnInterval > 0f)
-                yield return new WaitForSeconds(kSpawnInterval);
+            if (i < count - 1 && wave.perSpawnDelay > 0f)
+                yield return new WaitForSeconds(wave.perSpawnDelay);
         }
 
-        if (!shrinkPerInstance)
-            _currentDistance = Mathf.Max(minDistance, _currentDistance - distanceStep);
-
-        s_IsSpawning = false;
-        _spawnRoutine = null;
+        _currentDistance = Mathf.Max(minDistance, wave.distance - distanceStep);
     }
 
     private void ClearClones()
@@ -266,7 +312,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         return clips[Random.Range(0, clips.Count)];
     }
 
-    private List<VideoClip> BuildClipList(int count)
+    private List<VideoClip> BuildClipList(int count, bool uniqueClips)
     {
         var result = new List<VideoClip>(count);
         if (clips == null || clips.Count == 0)
@@ -287,7 +333,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         var pool = new List<VideoClip>(clips);
         Shuffle(pool);
 
-        if (!kUniqueClipsPerSpawn || pool.Count == 1)
+        if (!uniqueClips || pool.Count == 1)
         {
             for (int i = 0; i < count; i++)
                 result.Add(PickRandomClip());
@@ -309,15 +355,18 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         }
     }
 
-    private static List<float> GenerateAngles(int count, float minSeparation)
+    private static List<float> GenerateAngles(int count, float minSeparation, float? fixedFirstAngle = null)
     {
         var angles = new List<float>(count);
         if (count <= 0)
             return angles;
 
+        if (fixedFirstAngle.HasValue)
+            angles.Add(NormalizeAngle(fixedFirstAngle.Value));
+
         if (minSeparation <= 0f)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = angles.Count; i < count; i++)
                 angles.Add(Random.Range(0f, 360f));
             return angles;
         }
@@ -344,13 +393,49 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         if (angles.Count < count)
         {
             angles.Clear();
-            float start = Random.Range(0f, 360f);
+            float start = fixedFirstAngle.HasValue ? NormalizeAngle(fixedFirstAngle.Value) : Random.Range(0f, 360f);
             float step = 360f / count;
             for (int i = 0; i < count; i++)
                 angles.Add(start + step * i);
         }
 
         return angles;
+    }
+
+    private static List<float> GenerateEqualAngles(int count, float? fixedFirstAngle = null)
+    {
+        var angles = new List<float>(count);
+        if (count <= 0)
+            return angles;
+
+        float start = fixedFirstAngle.HasValue ? NormalizeAngle(fixedFirstAngle.Value) : Random.Range(0f, 360f);
+        float step = 360f / count;
+        for (int i = 0; i < count; i++)
+            angles.Add(start + (step * i));
+
+        return angles;
+    }
+
+    private static float NormalizeAngle(float angle)
+    {
+        angle %= 360f;
+        if (angle < 0f)
+            angle += 360f;
+        return angle;
+    }
+
+    private static float GetAudienceForwardAngle(Transform target)
+    {
+        if (target == null)
+            return Random.Range(0f, 360f);
+
+        Vector3 forward = target.forward;
+        forward.y = 0f;
+        if (forward.sqrMagnitude < 0.0001f)
+            return Random.Range(0f, 360f);
+
+        forward.Normalize();
+        return Mathf.Atan2(forward.z, forward.x) * Mathf.Rad2Deg;
     }
 
     private static float MinAngleForArc(float arcLength, float radius)
@@ -362,13 +447,13 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         return angleRad * Mathf.Rad2Deg;
     }
 
-    private void StartFadeIn(GameObject target)
+    private void StartFadeIn(GameObject target, float duration)
     {
-        if (kFadeInDuration <= 0f)
+        if (duration <= 0f)
             return;
 
         SetAlpha(target, 0f);
-        StartCoroutine(FadeInRoutine(target, kFadeInDuration));
+        StartCoroutine(FadeInRoutine(target, duration));
     }
 
     private System.Collections.IEnumerator FadeInRoutine(GameObject target, float duration)
@@ -388,7 +473,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
     private void SetAlpha(GameObject target, float alpha)
     {
         var canvasGroup = target.GetComponent<CanvasGroup>();
-        if (canvasGroup == null && kAutoAddCanvasGroup)
+        if (canvasGroup == null && autoAddCanvasGroup)
             canvasGroup = target.AddComponent<CanvasGroup>();
 
         if (canvasGroup != null)

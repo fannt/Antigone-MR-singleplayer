@@ -27,9 +27,20 @@ public class Cue
     public GeometryCueAction geometryAction = GeometryCueAction.None;
     public float duration = 0f;   // duration in seconds for locking cue system
 
-    public float audioDelay = 0f;        // delay before audio starts
     public bool goToNextCue = false;     // automatically trigger next cue when done
     public bool toggleActiveTo = true; // true = activate on start, false = deactivate on start
+
+    [Header("Spawner Wave")]
+    public bool overrideSpawnerWave = false;
+    [Range(1, 10)] public int waveMinCount = 1;
+    [Range(1, 10)] public int waveMaxCount = 1;
+    [Range(0f, 180f)] public float waveMinSeparationDegrees = 15f;
+    [Range(0f, 2f)] public float waveSpawnInterval = 0.35f;
+    [Range(0f, 2f)] public float waveFadeInDuration = 0.35f;
+    [Range(0.25f, 20f)] public float waveDistance = 5f;
+    public bool waveEqualDistribution = false;
+    public bool waveUniqueClips = true;
+    public bool waveFirstInFrontOfAudience = false;
 }
 
 public interface ICueTriggeredReceiver
@@ -84,16 +95,16 @@ public class CueController : MonoBehaviour
 
     public bool TryTriggerCue(int index, bool ignoreSequentialGate = false)
     {
-        Debug.Log($"TriggerCue({index}) called");
+        Debug.LogWarning($"TriggerCue({index}) called");
         if (cueRunning)
         {
-            Debug.Log("Cue blocked — another cue is running.");
+            Debug.LogWarning("Cue blocked — another cue is running.");
             return false;
         }
 
         if (!ignoreSequentialGate && runSequentialy && index != nextCueIndex)
         {
-            Debug.Log($"Skipping cue {index}, waiting for cue {nextCueIndex}");
+            Debug.LogWarning($"Skipping cue {index}, waiting for cue {nextCueIndex}");
             return false;
         }
 
@@ -116,7 +127,7 @@ public class CueController : MonoBehaviour
         }
 
         nextCueIndex = index;
-        Debug.Log($"Jumped to cue index {index} ({cues[index].cueName}).");
+        Debug.LogWarning($"Jumped to cue index {index} ({cues[index].cueName}).");
         return true;
     }
 
@@ -136,7 +147,7 @@ public class CueController : MonoBehaviour
         }
 
         nextCueIndex = index;
-        Debug.Log($"Jumped to cue index {index} ({cues[index].cueName}) and running.");
+        Debug.LogWarning($"Jumped to cue index {index} ({cues[index].cueName}) and running.");
         return TryTriggerCue(index, ignoreSequentialGateForRun);
     }
 
@@ -278,6 +289,7 @@ public class CueController : MonoBehaviour
 
     private void ApplyCueInstant(Cue cue, int cueIndex, float cueStartTime, float targetTimelineTime)
     {
+
         if (cue.gameObject != null)
         {
             // Keep receiver-driven/spawner objects out of instant rebuild,
@@ -314,7 +326,7 @@ public class CueController : MonoBehaviour
             return;
 
         AudioSource audio = cue.audio;
-        float playbackElapsed = elapsedSinceCueStart - Mathf.Max(0f, cue.audioDelay);
+        float playbackElapsed = elapsedSinceCueStart;
         if (playbackElapsed < 0f)
         {
             audio.Stop();
@@ -422,73 +434,75 @@ public class CueController : MonoBehaviour
     {
         Cue cue = cues[index];
         cueRunning = true;
-        Debug.Log($"Cue {index} START: {cue.cueName}");
-
-        if (cue.gameObject != null)
-        {
-            if (cue.toggleActiveTo)
-            {
-                Debug.Log($"Cue {index}: activating object {cue.gameObject.name}");
-                cue.gameObject.SetActive(true);
-            }
-            else
-            {
-                Debug.Log($"Cue {index}: deactivating object {cue.gameObject.name}");
-                cue.gameObject.SetActive(false);
-            }
-
-            NotifyCueReceivers(cue);
-        }
-        else
-        {
-            Debug.Log($"Cue {index}: object activation/deactivation skipped by flag");
-        }
+        Debug.LogWarning($"Cue {index} START: {cue.cueName}");
 
         try
         {
-            TriggerGeometryAction(cue, index);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Cue {index}: geometry action failed: {e.Message}");
-        }
-
-        if (cue.audio != null)
-        {
-            Debug.Log($"Cue {index}: playing audio");
-            if (cue.audioDelay > 0f)
-                StartCoroutine(PlayAudioAfterDelay(cue.audio, cue.audioDelay));
-            else
-                cue.audio.Play();
-        }
-
-        if (cue.video != null)
-        {
-            Debug.Log($"Cue {index}: playing video");
-            cue.video.Play();
-        }
-
-        // Duration timer
-        float timer = Mathf.Max(0f, cue.duration);
-        if (timer > 0f)
-        {
-            while (timer > 0f)
+            if (cue.gameObject != null)
             {
-                timer -= Time.deltaTime;
-                yield return null;
+                if (cue.toggleActiveTo)
+                {
+                    Debug.LogWarning($"Cue {index}: activating object {cue.gameObject.name}");
+                    cue.gameObject.SetActive(true);
+                }
+                else
+                {
+                    Debug.LogWarning($"Cue {index}: deactivating object {cue.gameObject.name}");
+                    cue.gameObject.SetActive(false);
+                }
+
+                NotifyCueReceivers(cue);
+            }
+            else
+            {
+                Debug.LogWarning($"Cue {index}: object activation/deactivation skipped by flag");
+            }
+
+            try
+            {
+                TriggerGeometryAction(cue, index);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Cue {index}: geometry action failed: {e.Message}");
+            }
+
+            if (cue.audio != null)
+            {
+                Debug.LogWarning($"Cue {index}: playing audio");
+                cue.audio.Play();
+            }
+
+            if (cue.video != null)
+            {
+                Debug.LogWarning($"Cue {index}: playing video");
+                cue.video.Play();
+            }
+
+            // Duration timer
+            float timer = Mathf.Max(0f, cue.duration);
+            if (timer > 0f)
+            {
+                while (timer > 0f)
+                {
+                    timer -= Time.deltaTime;
+                    yield return null;
+                }
             }
         }
-
-        Debug.Log($"Cue {index} END: {cue.cueName}");
-        cueRunning = false;
-
-        if (runSequentialy)
+        finally
         {
-            nextCueIndex = Mathf.Min(index + 1, CueCount);
+            Debug.LogWarning($"Cue {index} END: {cue.cueName}");
+            cueRunning = false;
 
-            if (cue.goToNextCue && nextCueIndex < CueCount)
+            if (runSequentialy)
             {
-                TriggerCue(nextCueIndex); // correctly trigger NEXT cue
+                nextCueIndex = Mathf.Min(index + 1, CueCount);
+
+                if (cue.goToNextCue && nextCueIndex < CueCount)
+                {
+                    TriggerCue(nextCueIndex); // correctly trigger NEXT cue
+                }
             }
         }
     }
@@ -546,7 +560,7 @@ public class CueController : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"Cue {cueIndex}: geometry action {cue.geometryAction} on {player.name}");
+        Debug.LogWarning($"Cue {cueIndex}: geometry action {cue.geometryAction} on {player.name}");
     }
 
     private static void EnsureGeometryPlayerActive(GeometrySequencePlayer player)
@@ -588,14 +602,17 @@ public class CueController : MonoBehaviour
         {
             var receiver = receivers[i];
             if (receiver != null)
-                receiver.OnCueTriggered(cue);
+            {
+                try
+                {
+                    receiver.OnCueTriggered(cue);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Cue receiver error on {cue.gameObject.name}: {e.Message}");
+                }
+            }
         }
     }
 
-    private System.Collections.IEnumerator PlayAudioAfterDelay(AudioSource audio, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        if (audio != null)
-            audio.Play();
-    }
 }

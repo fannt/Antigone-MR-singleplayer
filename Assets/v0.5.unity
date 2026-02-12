@@ -548,19 +548,39 @@ MonoBehaviour:
     geometryPlayer: {fileID: 271281997}
     geometryAction: 1
     duration: 0
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: intro delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 5
-    audioDelay: 0
+    duration: 30
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: intro cue
     audio: {fileID: 80018081}
     video: {fileID: 0}
@@ -568,9 +588,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 160
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: car
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -578,9 +608,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 11
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: chapter 2.1 ipad
     audio: {fileID: 0}
     video: {fileID: 380864267}
@@ -588,9 +628,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 10
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: music cue
     audio: {fileID: 1267584203}
     video: {fileID: 0}
@@ -598,9 +648,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 11
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: flee-audio1
     audio: {fileID: 867883071}
     video: {fileID: 0}
@@ -608,9 +668,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 0
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: flee-audio2
     audio: {fileID: 228395582}
     video: {fileID: 0}
@@ -618,9 +688,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 0
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: Chapter 1 cue delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -628,9 +708,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 5
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: Flee dialogue
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -638,9 +728,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 271281997}
     geometryAction: 2
     duration: 215
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: Chapter 1 cue delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -648,9 +748,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 8
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: car off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -658,9 +768,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 11
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: ipad off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -668,9 +788,19 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 0
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
   - cueName: figures off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -678,29 +808,119 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 0
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 0
-  - cueName: chapter 2 video
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+  - cueName: 'chapter 2: 1 video far'
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 45
-    audioDelay: 0
+    duration: 10
     goToNextCue: 1
     toggleActiveTo: 1
-  - cueName: chapter 2 video 2
+    stopAllVideos: 0
+    overrideSpawnerWave: 1
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 0
+    waveSpawnInterval: 0
+    waveFadeInDuration: 0.35
+    waveDistance: 20
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 1
+  - cueName: 'chapter 2: 3 videos far'
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 45
-    audioDelay: 0
+    duration: 15
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 1
+    waveMinCount: 3
+    waveMaxCount: 3
+    waveMinSeparationDegrees: 45
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 18.95
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+  - cueName: 'chapter 2: 4 videos far/mid'
+    audio: {fileID: 0}
+    video: {fileID: 621793858}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 10
+    goToNextCue: 1
+    toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 1
+    waveMinCount: 4
+    waveMaxCount: 4
+    waveMinSeparationDegrees: 45
+    waveSpawnInterval: 0.755
+    waveFadeInDuration: 0.35
+    waveDistance: 15.55
+    waveEqualDistribution: 1
+    waveUniqueClips: 0
+    waveFirstInFrontOfAudience: 0
+  - cueName: 'chapter 2: 4-5 videos far/mid'
+    audio: {fileID: 0}
+    video: {fileID: 621793858}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 20
+    goToNextCue: 1
+    toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 1
+    waveMinCount: 4
+    waveMaxCount: 5
+    waveMinSeparationDegrees: 45
+    waveSpawnInterval: 0.281
+    waveFadeInDuration: 0.35
+    waveDistance: 11.92
+    waveEqualDistribution: 0
+    waveUniqueClips: 0
+    waveFirstInFrontOfAudience: 0
+  - cueName: 'chapter 2: 6 videos mid/close'
+    audio: {fileID: 0}
+    video: {fileID: 621793858}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 10
+    goToNextCue: 1
+    toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 1
+    waveMinCount: 6
+    waveMaxCount: 6
+    waveMinSeparationDegrees: 45
+    waveSpawnInterval: 0.281
+    waveFadeInDuration: 0.35
+    waveDistance: 7
+    waveEqualDistribution: 1
+    waveUniqueClips: 0
+    waveFirstInFrontOfAudience: 0
   - cueName: chapter 2 video off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -708,9 +928,22 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 15
-    audioDelay: 0
     goToNextCue: 1
     toggleActiveTo: 1
+    stopAllVideos: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+  rebuildStateOnJumpAndRun: 1
+  replayCueReceiversDuringJumpRebuild: 0
+  simulateMediaTimeDuringJumpRebuild: 1
 --- !u!4 &184794330
 Transform:
   m_ObjectHideFlags: 0
@@ -733,7 +966,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184794328}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7e0e9fc45ca48b585fd30cf1226d80f, type: 3}
   m_Name: 
@@ -1859,6 +2092,7 @@ MonoBehaviour:
   maxSpawnCount: 8
   minSeparationDegrees: 15
   spawnInterval: 9
+  firstInFrontOfAudience: 0
   startDistance: 20
   minDistance: 5
   distanceStep: 1
