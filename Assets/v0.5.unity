@@ -517,6 +517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 184794330}
   - component: {fileID: 184794329}
+  - component: {fileID: 184794331}
   m_Layer: 0
   m_Name: CueManager
   m_TagString: Untagged
@@ -538,7 +539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CueController
   autoStart: 1
   runSequentialy: 1
-  startingCue: 14
+  startingCue: 0
   cues:
   - cueName: Flee dialogue preload
     audio: {fileID: 0}
@@ -725,6 +726,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &184794331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184794328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7e0e9fc45ca48b585fd30cf1226d80f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CueOscReceiver
+  cueController: {fileID: 0}
+  autoFindCueController: 1
+  listenPort: 9000
+  runCueAddress: /cue/run
+  jumpCueAddress: /cue/jump
+  ignoreSequentialGateForExternalRun: 1
+  verboseLogging: 1
 --- !u!1 &228395580
 GameObject:
   m_ObjectHideFlags: 0
