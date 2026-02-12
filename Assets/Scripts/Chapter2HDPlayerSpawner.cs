@@ -76,8 +76,15 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
 
     private void OnDisable()
     {
+        CleanupOwnedInstancesGlobal();
+
         if (destroyClonesOnDisable)
             ClearClones();
+    }
+
+    private void OnDestroy()
+    {
+        CleanupOwnedInstancesGlobal();
     }
 
     public void OnCueTriggered(Cue cue)
@@ -192,7 +199,7 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
             ? GenerateEqualAngles(count, wave.firstInFront ? firstAngle : (float?)null)
             : GenerateAngles(count, Mathf.Clamp(minAngle, 0f, 180f), wave.firstInFront ? firstAngle : (float?)null);
         var clipsForSpawn = BuildClipList(count, wave.uniqueClips);
-        var parent = spawnParent != null ? spawnParent : transform.parent;
+        var parent = spawnParent != null ? spawnParent : transform;
 
         for (int i = 0; i < count; i++)
         {
@@ -202,6 +209,11 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
                 var spawner = instance.GetComponent<Chapter2HDPlayerSpawner>();
                 if (spawner != null)
                     spawner.enabled = false;
+
+                var tag = instance.GetComponent<Chapter2HDPlayerSpawnedInstanceTag>();
+                if (tag == null)
+                    tag = instance.AddComponent<Chapter2HDPlayerSpawnedInstanceTag>();
+                tag.ownerSpawner = this;
 
                 _clones.Add(instance);
             }
@@ -232,6 +244,23 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         }
 
         _clones.Clear();
+    }
+
+    private void CleanupOwnedInstancesGlobal()
+    {
+        var spawned = Object.FindObjectsOfType<Chapter2HDPlayerSpawnedInstanceTag>(true);
+        if (spawned == null || spawned.Length == 0)
+            return;
+
+        for (int i = 0; i < spawned.Length; i++)
+        {
+            var tag = spawned[i];
+            if (tag == null || tag.ownerSpawner != this)
+                continue;
+
+            if (tag.gameObject != null)
+                Destroy(tag.gameObject);
+        }
     }
 
     private Transform ResolveAudience()

@@ -550,7 +550,6 @@ MonoBehaviour:
     duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -570,7 +569,6 @@ MonoBehaviour:
     duration: 30
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -590,7 +588,6 @@ MonoBehaviour:
     duration: 160
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -610,7 +607,6 @@ MonoBehaviour:
     duration: 11
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -630,7 +626,6 @@ MonoBehaviour:
     duration: 10
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -650,7 +645,6 @@ MonoBehaviour:
     duration: 11
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -670,7 +664,6 @@ MonoBehaviour:
     duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -690,7 +683,6 @@ MonoBehaviour:
     duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -710,7 +702,6 @@ MonoBehaviour:
     duration: 5
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -730,7 +721,6 @@ MonoBehaviour:
     duration: 215
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -750,7 +740,6 @@ MonoBehaviour:
     duration: 8
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -770,7 +759,6 @@ MonoBehaviour:
     duration: 11
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -790,7 +778,6 @@ MonoBehaviour:
     duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -810,7 +797,6 @@ MonoBehaviour:
     duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -830,7 +816,6 @@ MonoBehaviour:
     duration: 10
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 1
     waveMinCount: 1
     waveMaxCount: 1
@@ -850,7 +835,6 @@ MonoBehaviour:
     duration: 15
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 1
     waveMinCount: 3
     waveMaxCount: 3
@@ -870,7 +854,6 @@ MonoBehaviour:
     duration: 10
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 1
     waveMinCount: 4
     waveMaxCount: 4
@@ -890,7 +873,6 @@ MonoBehaviour:
     duration: 20
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 1
     waveMinCount: 4
     waveMaxCount: 5
@@ -910,7 +892,6 @@ MonoBehaviour:
     duration: 10
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 1
     waveMinCount: 6
     waveMaxCount: 6
@@ -930,7 +911,6 @@ MonoBehaviour:
     duration: 15
     goToNextCue: 1
     toggleActiveTo: 1
-    stopAllVideos: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -966,7 +946,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184794328}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7e0e9fc45ca48b585fd30cf1226d80f, type: 3}
   m_Name: 
