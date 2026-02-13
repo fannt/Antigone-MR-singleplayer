@@ -14,7 +14,6 @@ public class CueCsvImporter : MonoBehaviour
 
     [Header("CSV Input")]
     [SerializeField] private string csvFilePath = string.Empty;
-    [SerializeField] private bool preferStartTimesWhenDurationEmpty = true;
 
     [ContextMenu("Import Cue Times CSV")]
     public void ImportFromConfiguredPath()
@@ -64,12 +63,16 @@ public class CueCsvImporter : MonoBehaviour
             return false;
         }
 
-        header.TryGetValue("starting time", out int startTimeColumn);
-        header.TryGetValue("duration", out int durationColumn);
-        header.TryGetValue("cue", out int cueNameColumn);
+        if (!header.TryGetValue("duration", out int durationColumn))
+        {
+            Debug.LogWarning("CueCsvImporter: missing required column 'Duration'.", this);
+            return false;
+        }
 
         var dataByCueIndex = new Dictionary<int, CueTimingData>();
         int skippedRows = 0;
+        int continuationRows = 0;
+        int rowsWithoutDuration = 0;
 
         for (int r = 1; r < rows.Count; r++)
         {
@@ -89,27 +92,36 @@ public class CueCsvImporter : MonoBehaviour
                 continue;
             }
 
-            CueTimingData data = new CueTimingData();
-            if (TryGetCell(row, startTimeColumn, out string startRaw) && TryParseTimeLikeSeconds(startRaw, out float startSeconds))
-            {
-                data.hasStart = true;
-                data.startSeconds = startSeconds;
-            }
-
             if (TryGetCell(row, durationColumn, out string durationRaw) && TryParseTimeLikeSeconds(durationRaw, out float durationSeconds))
             {
-                data.hasDuration = true;
-                data.durationSeconds = Mathf.Max(0f, durationSeconds);
+                float clampedDuration = Mathf.Max(0f, durationSeconds);
+                if (dataByCueIndex.TryGetValue(cueIndex, out CueTimingData existing))
+                {
+                    existing.hasDuration = true;
+                    existing.durationSeconds += clampedDuration;
+                    existing.segmentCount += 1;
+                    dataByCueIndex[cueIndex] = existing;
+                    continuationRows++;
+                }
+                else
+                {
+                    CueTimingData data = new CueTimingData
+                    {
+                        hasDuration = true,
+                        durationSeconds = clampedDuration,
+                        segmentCount = 1
+                    };
+                    dataByCueIndex[cueIndex] = data;
+                }
             }
-
-            if (TryGetCell(row, cueNameColumn, out string cueName))
-                data.cueName = cueName;
-
-            dataByCueIndex[cueIndex] = data;
+            else
+            {
+                rowsWithoutDuration++;
+                continue;
+            }
         }
 
-        int appliedDirectDurations = 0;
-        int appliedDerivedDurations = 0;
+        int appliedDurations = 0;
         int unchanged = 0;
 
 #if UNITY_EDITOR
@@ -128,28 +140,14 @@ public class CueCsvImporter : MonoBehaviour
             bool changed = false;
             if (rowData.hasDuration)
             {
-                float newDuration = Mathf.Max(0f, rowData.durationSeconds);
-                if (!Mathf.Approximately(cue.duration, newDuration))
+                float nextDuration = Mathf.Max(0f, rowData.durationSeconds);
+                if (!Mathf.Approximately(cue.duration, nextDuration))
                 {
-                    cue.duration = newDuration;
+                    cue.duration = nextDuration;
                     changed = true;
                 }
 
-                appliedDirectDurations++;
-            }
-            else if (preferStartTimesWhenDurationEmpty && rowData.hasStart)
-            {
-                if (TryFindNextStart(i, dataByCueIndex, out float nextStartSeconds))
-                {
-                    float derived = Mathf.Max(0f, nextStartSeconds - rowData.startSeconds);
-                    if (!Mathf.Approximately(cue.duration, derived))
-                    {
-                        cue.duration = derived;
-                        changed = true;
-                    }
-
-                    appliedDerivedDurations++;
-                }
+                appliedDurations++;
             }
 
             if (!changed)
@@ -158,7 +156,7 @@ public class CueCsvImporter : MonoBehaviour
 
         Debug.Log(
             $"CueCsvImporter: imported from {resolvedPath}. " +
-            $"direct={appliedDirectDurations}, derived={appliedDerivedDurations}, unchanged={unchanged}, skippedRows={skippedRows}",
+            $"durations={appliedDurations}, unchanged={unchanged}, skippedRows={skippedRows}, continuationRows={continuationRows}, rowsWithoutDuration={rowsWithoutDuration}",
             this);
 
 #if UNITY_EDITOR
@@ -166,26 +164,6 @@ public class CueCsvImporter : MonoBehaviour
 #endif
 
         return true;
-    }
-
-    private static bool TryFindNextStart(int cueIndex, Dictionary<int, CueTimingData> dataByCueIndex, out float nextStartSeconds)
-    {
-        int bestIndex = int.MaxValue;
-        float bestStart = 0f;
-        foreach (KeyValuePair<int, CueTimingData> kvp in dataByCueIndex)
-        {
-            if (kvp.Key <= cueIndex || !kvp.Value.hasStart)
-                continue;
-
-            if (kvp.Key < bestIndex)
-            {
-                bestIndex = kvp.Key;
-                bestStart = kvp.Value.startSeconds;
-            }
-        }
-
-        nextStartSeconds = bestStart;
-        return bestIndex != int.MaxValue;
     }
 
     private bool TryAssignCueController()
@@ -265,14 +243,19 @@ public class CueCsvImporter : MonoBehaviour
         }
         else
         {
-            if (!float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float hh))
+            if (!float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float mm))
                 return false;
-            if (!float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float mm))
+            if (!float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float ss))
                 return false;
-            if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float ss))
+            if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float sub))
                 return false;
 
-            seconds = hh * 3600f + mm * 60f + ss;
+            // 3-part format is treated as MM:SS:subseconds (not frames).
+            // Examples: 2:10:00 -> 130s, 0:05:50 -> 5.5s.
+            string subPart = parts[2].Trim();
+            int subDigits = Mathf.Clamp(subPart.Length, 1, 6);
+            float subScale = Mathf.Pow(10f, subDigits);
+            seconds = mm * 60f + ss + (sub / subScale);
         }
 
         if (negative)
@@ -389,10 +372,8 @@ public class CueCsvImporter : MonoBehaviour
 
     private struct CueTimingData
     {
-        public bool hasStart;
-        public float startSeconds;
         public bool hasDuration;
         public float durationSeconds;
-        public string cueName;
+        public int segmentCount;
     }
 }

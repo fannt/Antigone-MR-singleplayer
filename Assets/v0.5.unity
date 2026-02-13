@@ -518,6 +518,7 @@ GameObject:
   - component: {fileID: 184794330}
   - component: {fileID: 184794329}
   - component: {fileID: 184794331}
+  - component: {fileID: 184794332}
   m_Layer: 0
   m_Name: CueManager
   m_TagString: Untagged
@@ -547,7 +548,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 271281997}
     geometryAction: 1
-    duration: 0
+    duration: 10
     goToNextCue: 1
     toggleActiveTo: 0
     overrideSpawnerWave: 0
@@ -566,7 +567,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 30
+    duration: 15
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -585,7 +586,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 160
+    duration: 100
     goToNextCue: 1
     toggleActiveTo: 0
     overrideSpawnerWave: 0
@@ -604,26 +605,7 @@ MonoBehaviour:
     gameObject: {fileID: 1213254253}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 11
-    goToNextCue: 1
-    toggleActiveTo: 1
-    overrideSpawnerWave: 0
-    waveMinCount: 1
-    waveMaxCount: 1
-    waveMinSeparationDegrees: 15
-    waveSpawnInterval: 0.35
-    waveFadeInDuration: 0.35
-    waveDistance: 5
-    waveEqualDistribution: 0
-    waveUniqueClips: 1
-    waveFirstInFrontOfAudience: 0
-  - cueName: chapter 2.1 ipad
-    audio: {fileID: 0}
-    video: {fileID: 380864267}
-    gameObject: {fileID: 380864266}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 10
+    duration: 5
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -642,9 +624,28 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 11
+    duration: 10
     goToNextCue: 1
     toggleActiveTo: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+  - cueName: chapter 2.1 ipad
+    audio: {fileID: 0}
+    video: {fileID: 380864267}
+    gameObject: {fileID: 380864266}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 85
+    goToNextCue: 1
+    toggleActiveTo: 1
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -718,7 +719,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 271281997}
     geometryAction: 2
-    duration: 215
+    duration: 205
     goToNextCue: 1
     toggleActiveTo: 0
     overrideSpawnerWave: 0
@@ -737,7 +738,7 @@ MonoBehaviour:
     gameObject: {fileID: 0}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 8
+    duration: 0
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -756,7 +757,7 @@ MonoBehaviour:
     gameObject: {fileID: 1213254253}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 11
+    duration: 0
     goToNextCue: 1
     toggleActiveTo: 0
     overrideSpawnerWave: 0
@@ -851,7 +852,7 @@ MonoBehaviour:
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 10
+    duration: 20
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 1
@@ -898,7 +899,7 @@ MonoBehaviour:
     waveMinSeparationDegrees: 45
     waveSpawnInterval: 0.281
     waveFadeInDuration: 0.35
-    waveDistance: 7
+    waveDistance: 5.99
     waveEqualDistribution: 1
     waveUniqueClips: 0
     waveFirstInFrontOfAudience: 0
@@ -909,6 +910,25 @@ MonoBehaviour:
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 15
+    goToNextCue: 1
+    toggleActiveTo: 1
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+  - cueName: chapter 2 video off
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 621793857}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 0
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -958,6 +978,22 @@ MonoBehaviour:
   jumpCueAddress: /cue/jump
   ignoreSequentialGateForExternalRun: 1
   verboseLogging: 1
+--- !u!114 &184794332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184794328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19a7fa14e860433ab83be747ffbb003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CueCsvImporter
+  cueController: {fileID: 184794329}
+  autoFindCueController: 1
+  csvFilePath: /Users/antonfilatov/backupignore/20_Unity_MR/09_TD/2026 - Flee - cuelist
+    [CARGATE] - v3.csv
 --- !u!1 &228395580
 GameObject:
   m_ObjectHideFlags: 0
