@@ -16,7 +16,6 @@ public class CueOscReceiver : MonoBehaviour
     [SerializeField] private int listenPort = 9000;
     [SerializeField] private string runCueAddress = "/cue/run";
     [SerializeField] private string jumpCueAddress = "/cue/jump";
-    [SerializeField] private bool ignoreSequentialGateForExternalRun = true;
     [SerializeField] private bool verboseLogging = false;
 
     private readonly Queue<QueuedCommand> commandQueue = new Queue<QueuedCommand>();
@@ -250,10 +249,10 @@ public class CueOscReceiver : MonoBehaviour
         switch (command.Type)
         {
             case CueOscCommandType.Run:
-                cueController.TryTriggerCue(command.CueIndex, ignoreSequentialGateForExternalRun);
+                cueController.TryTriggerCue(command.CueIndex);
                 break;
             case CueOscCommandType.JumpAndRun:
-                cueController.JumpToCueAndRun(command.CueIndex, ignoreSequentialGateForExternalRun);
+                cueController.JumpToCueAndRun(command.CueIndex);
                 break;
         }
 

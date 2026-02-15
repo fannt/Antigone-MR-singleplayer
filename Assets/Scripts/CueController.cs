@@ -50,10 +50,6 @@ public interface ICueTriggeredReceiver
 
 public class CueController : MonoBehaviour
 {
-
-    public bool autoStart = false;
-    public bool runSequentialy = true;
-    public int startingCue = 0;   // starting cue index
     public Cue[] cues;
 
     [Header("Jump Rebuild")]
@@ -75,14 +71,10 @@ public class CueController : MonoBehaviour
 
     private void Start()
     {
-        nextCueIndex = CueCount > 0 ? Mathf.Clamp(startingCue, 0, CueCount - 1) : 0;
+        nextCueIndex = CueCount > 0 ? Mathf.Clamp(0, 0, CueCount - 1) : 0;
         CacheControlledTargets();
         CaptureBaselineState();
-
-        if (autoStart)
-        {
-            TriggerCue(startingCue);
-        }
+        TriggerCue(0);
     }
 
     private int nextCueIndex = 0;
@@ -93,18 +85,12 @@ public class CueController : MonoBehaviour
         TryTriggerCue(index);
     }
 
-    public bool TryTriggerCue(int index, bool ignoreSequentialGate = false)
+    public bool TryTriggerCue(int index)
     {
         Debug.LogWarning($"TriggerCue({index}) called");
         if (cueRunning)
         {
             Debug.LogWarning("Cue blocked — another cue is running.");
-            return false;
-        }
-
-        if (!ignoreSequentialGate && runSequentialy && index != nextCueIndex)
-        {
-            Debug.LogWarning($"Skipping cue {index}, waiting for cue {nextCueIndex}");
             return false;
         }
 
@@ -131,7 +117,7 @@ public class CueController : MonoBehaviour
         return true;
     }
 
-    public bool JumpToCueAndRun(int index, bool ignoreSequentialGateForRun = true)
+    public bool JumpToCueAndRun(int index)
     {
         if (!IsCueIndexValid(index))
         {
@@ -148,7 +134,7 @@ public class CueController : MonoBehaviour
 
         nextCueIndex = index;
         Debug.LogWarning($"Jumped to cue index {index} ({cues[index].cueName}) and running.");
-        return TryTriggerCue(index, ignoreSequentialGateForRun);
+        return TryTriggerCue(index);
     }
 
     public bool IsCueIndexValid(int index)
@@ -495,14 +481,11 @@ public class CueController : MonoBehaviour
             Debug.LogWarning($"Cue {index} END: {cue.cueName}");
             cueRunning = false;
 
-            if (runSequentialy)
-            {
-                nextCueIndex = Mathf.Min(index + 1, CueCount);
+            nextCueIndex = Mathf.Min(index + 1, CueCount);
 
-                if (cue.goToNextCue && nextCueIndex < CueCount)
-                {
-                    TriggerCue(nextCueIndex); // correctly trigger NEXT cue
-                }
+            if (cue.goToNextCue && nextCueIndex < CueCount)
+            {
+                TriggerCue(nextCueIndex); // correctly trigger NEXT cue
             }
         }
     }
