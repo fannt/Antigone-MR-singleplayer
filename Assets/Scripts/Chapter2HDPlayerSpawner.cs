@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 
 [DisallowMultipleComponent]
-public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
+public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver, ICueCompletedReceiver
 {
     [Header("Cue Triggers")]
     public bool spawnOnEnable = false;
@@ -47,17 +47,23 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
     public float fadeInDuration = 0.35f;
     public bool autoAddCanvasGroup = true;
 
+    [Header("Despawn FX")]
+    public float despawnFlickerDuration = 1.2f;
+    public float despawnFlickerMinInterval = 0.04f;
+    public float despawnFlickerMaxInterval = 0.12f;
+    public float despawnFadeOutDuration = 0.25f;
+    public bool disableRootOnDespawn = true;
+
     [Header("Editor")]
     public string clipsFolder = "Assets/chapter2";
     public bool autoRefreshClips = true;
 
-    private static bool s_IsSpawning = false;
     private const float kMinSeparationMeters = 0.8f;
     private float _currentDistance = 0f;
-    private int _lastSpawnFrame = -1;
     private readonly List<GameObject> _clones = new List<GameObject>();
     private Quaternion _lookOffset = Quaternion.identity;
     private Coroutine _spawnRoutine;
+    private Coroutine _despawnRoutine;
     private Cue _pendingCue;
 
     private void Awake()
@@ -76,6 +82,8 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
 
     private void OnDisable()
     {
+        StopDespawnRoutine();
+        StopSpawnRoutine();
         CleanupOwnedInstancesGlobal();
 
         if (destroyClonesOnDisable)
@@ -84,15 +92,34 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
 
     private void OnDestroy()
     {
+        StopDespawnRoutine();
+        StopSpawnRoutine();
         CleanupOwnedInstancesGlobal();
     }
 
     public void OnCueTriggered(Cue cue)
     {
+        if (cue != null && cue.videoSpawnerDespawnNow)
+        {
+            TriggerDespawnFx(cue);
+            return;
+        }
+
+        if (cue != null && cue.videoSpawnerDespawnOnCueEnd)
+            return;
+
         if (!spawnOnCue)
             return;
 
         TrySpawn(cue);
+    }
+
+    public void OnCueCompleted(Cue cue, int cueIndex, bool isLastCue)
+    {
+        if (cue == null || !cue.videoSpawnerDespawnOnCueEnd || cue.videoSpawnerDespawnNow)
+            return;
+
+        TriggerDespawnFx(cue);
     }
 
     public void Spawn()
@@ -105,20 +132,19 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         if (!isActiveAndEnabled)
             return;
 
-        if (s_IsSpawning)
-            return;
-
         if (!gameObject.activeInHierarchy)
         {
             ClearClones();
             return;
         }
 
-        if (_lastSpawnFrame == Time.frameCount)
-            return;
-
         if (_spawnRoutine != null)
+        {
             StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+
+        StopDespawnRoutine(restoreVisibleState: true);
 
         _pendingCue = cue;
         _spawnRoutine = StartCoroutine(SpawnSequence());
@@ -126,19 +152,163 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
 
     private System.Collections.IEnumerator SpawnSequence()
     {
-        s_IsSpawning = true;
-        _lastSpawnFrame = Time.frameCount;
+        try
+        {
+            if (resetDistanceOnEnable || _currentDistance <= 0f)
+                _currentDistance = startDistance;
 
-        if (resetDistanceOnEnable || _currentDistance <= 0f)
-            _currentDistance = startDistance;
+            var target = ResolveAudience();
+            if (target != null)
+                yield return SpawnWave(target, BuildWaveSettings(_pendingCue));
+        }
+        finally
+        {
+            _spawnRoutine = null;
+            _pendingCue = null;
+        }
+    }
 
-        var target = ResolveAudience();
-        if (target != null)
-            yield return SpawnWave(target, BuildWaveSettings(_pendingCue));
+    private void StopSpawnRoutine()
+    {
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
 
-        s_IsSpawning = false;
-        _spawnRoutine = null;
         _pendingCue = null;
+    }
+
+    private struct DespawnSettings
+    {
+        public float flickerDuration;
+        public float flickerMinInterval;
+        public float flickerMaxInterval;
+        public float fadeOutDuration;
+        public bool disableRoot;
+    }
+
+    private void TriggerDespawnFx(Cue cue)
+    {
+        if (!isActiveAndEnabled)
+            return;
+
+        StopSpawnRoutine();
+        StopDespawnRoutine(restoreVisibleState: true);
+        _despawnRoutine = StartCoroutine(DespawnFxSequence(BuildDespawnSettings(cue)));
+    }
+
+    private DespawnSettings BuildDespawnSettings(Cue cue)
+    {
+        var settings = new DespawnSettings
+        {
+            flickerDuration = Mathf.Max(0f, despawnFlickerDuration),
+            flickerMinInterval = Mathf.Max(0.01f, despawnFlickerMinInterval),
+            flickerMaxInterval = Mathf.Max(0.01f, despawnFlickerMaxInterval),
+            fadeOutDuration = Mathf.Max(0f, despawnFadeOutDuration),
+            disableRoot = disableRootOnDespawn
+        };
+
+        if (cue != null)
+        {
+            settings.flickerDuration = Mathf.Max(0f, cue.videoSpawnerFlickerDuration);
+            settings.flickerMinInterval = Mathf.Max(0.01f, cue.videoSpawnerFlickerMinInterval);
+            settings.flickerMaxInterval = Mathf.Max(0.01f, cue.videoSpawnerFlickerMaxInterval);
+            settings.fadeOutDuration = Mathf.Max(0f, cue.videoSpawnerFadeOutDuration);
+            settings.disableRoot = cue.videoSpawnerDisableRootAfterDespawn;
+        }
+
+        if (settings.flickerMaxInterval < settings.flickerMinInterval)
+            settings.flickerMaxInterval = settings.flickerMinInterval;
+
+        return settings;
+    }
+
+    private System.Collections.IEnumerator DespawnFxSequence(DespawnSettings settings)
+    {
+        try
+        {
+            var targets = CollectOwnedInstances(includeRoot: true);
+            if (targets.Count == 0)
+                yield break;
+
+            float minInterval = Mathf.Max(0.01f, settings.flickerMinInterval);
+            float maxInterval = Mathf.Max(minInterval, settings.flickerMaxInterval);
+            int count = targets.Count;
+            var nextToggleAt = new float[count];
+
+            // Independent initial states/phases so targets don't flicker in sync.
+            for (int i = 0; i < count; i++)
+            {
+                var target = targets[i];
+                if (target == null)
+                    continue;
+
+                bool lightsOn = Random.value > 0.35f;
+                SetAlpha(target, lightsOn ? 1f : 0f);
+                nextToggleAt[i] = Random.Range(0f, maxInterval);
+            }
+
+            float elapsed = 0f;
+            while (elapsed < settings.flickerDuration)
+            {
+                elapsed += Time.deltaTime;
+
+                for (int i = 0; i < count; i++)
+                {
+                    var target = targets[i];
+                    if (target == null)
+                        continue;
+
+                    if (elapsed < nextToggleAt[i])
+                        continue;
+
+                    bool lightsOn = Random.value > 0.35f;
+                    SetAlpha(target, lightsOn ? 1f : 0f);
+                    nextToggleAt[i] = elapsed + Random.Range(minInterval, maxInterval);
+                }
+
+                yield return null;
+            }
+
+            SetAlphaForTargets(targets, 1f);
+
+            if (settings.fadeOutDuration > 0f)
+            {
+                float t = 0f;
+                while (t < settings.fadeOutDuration)
+                {
+                    t += Time.deltaTime;
+                    float alpha = 1f - Mathf.Clamp01(t / settings.fadeOutDuration);
+                    SetAlphaForTargets(targets, alpha);
+                    yield return null;
+                }
+            }
+
+            SetAlphaForTargets(targets, 0f);
+
+            CleanupOwnedInstancesGlobal();
+            ClearClones();
+
+            if (settings.disableRoot && gameObject != null && gameObject.activeSelf)
+                gameObject.SetActive(false);
+        }
+        finally
+        {
+            _despawnRoutine = null;
+        }
+    }
+
+    private void StopDespawnRoutine(bool restoreVisibleState = false)
+    {
+        if (_despawnRoutine != null)
+        {
+            StopCoroutine(_despawnRoutine);
+            _despawnRoutine = null;
+        }
+
+        if (restoreVisibleState)
+            SetAlphaForTargets(CollectOwnedInstances(includeRoot: true), 1f);
     }
 
     private struct WaveSettings
@@ -244,6 +414,56 @@ public class Chapter2HDPlayerSpawner : MonoBehaviour, ICueTriggeredReceiver
         }
 
         _clones.Clear();
+    }
+
+    private List<GameObject> CollectOwnedInstances(bool includeRoot)
+    {
+        var result = new List<GameObject>();
+        var seen = new HashSet<GameObject>();
+
+        void Add(GameObject go)
+        {
+            if (go == null || !seen.Add(go))
+                return;
+            result.Add(go);
+        }
+
+        if (includeRoot)
+            Add(gameObject);
+
+        for (int i = 0; i < _clones.Count; i++)
+            Add(_clones[i]);
+
+        var spawned = Object.FindObjectsOfType<Chapter2HDPlayerSpawnedInstanceTag>(true);
+        if (spawned != null)
+        {
+            for (int i = 0; i < spawned.Length; i++)
+            {
+                var tag = spawned[i];
+                if (tag == null || tag.ownerSpawner != this)
+                    continue;
+
+                Add(tag.gameObject);
+            }
+        }
+
+        return result;
+    }
+
+    private void SetAlphaForTargets(List<GameObject> targets, float alpha)
+    {
+        if (targets == null)
+            return;
+
+        float clamped = Mathf.Clamp01(alpha);
+        for (int i = 0; i < targets.Count; i++)
+        {
+            var target = targets[i];
+            if (target == null)
+                continue;
+
+            SetAlpha(target, clamped);
+        }
     }
 
     private void CleanupOwnedInstancesGlobal()

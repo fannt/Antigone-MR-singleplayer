@@ -558,6 +558,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: intro delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -577,6 +584,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: intro cue
     audio: {fileID: 80018081}
     video: {fileID: 0}
@@ -596,6 +610,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: car
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -615,6 +636,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: music cue
     audio: {fileID: 1267584203}
     video: {fileID: 0}
@@ -634,6 +662,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: chapter 2.1 ipad
     audio: {fileID: 0}
     video: {fileID: 380864267}
@@ -653,6 +688,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: flee-audio1
     audio: {fileID: 867883071}
     video: {fileID: 0}
@@ -672,6 +714,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: flee-audio2
     audio: {fileID: 228395582}
     video: {fileID: 0}
@@ -691,6 +740,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: Chapter 1 cue delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -710,6 +766,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: Flee dialogue
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -729,6 +792,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: Chapter 1 cue delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -748,6 +818,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: car off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -767,6 +844,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: ipad off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -786,6 +870,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: figures off
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -805,6 +896,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 1 video far'
     audio: {fileID: 0}
     video: {fileID: 621793858}
@@ -819,30 +917,44 @@ MonoBehaviour:
     waveMaxCount: 1
     waveMinSeparationDegrees: 0
     waveSpawnInterval: 0
-    waveFadeInDuration: 0.35
+    waveFadeInDuration: 0.331
     waveDistance: 20
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 1
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 3 videos far'
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 15
+    duration: 25
     goToNextCue: 1
-    toggleActiveTo: 0
+    toggleActiveTo: 1
     overrideSpawnerWave: 1
     waveMinCount: 3
     waveMaxCount: 3
     waveMinSeparationDegrees: 45
-    waveSpawnInterval: 0.35
-    waveFadeInDuration: 0.35
-    waveDistance: 18.95
+    waveSpawnInterval: 0
+    waveFadeInDuration: 0.127
+    waveDistance: 17.99
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 4 videos far/mid'
     audio: {fileID: 0}
     video: {fileID: 621793858}
@@ -851,59 +963,80 @@ MonoBehaviour:
     geometryAction: 0
     duration: 20
     goToNextCue: 1
-    toggleActiveTo: 0
+    toggleActiveTo: 1
     overrideSpawnerWave: 1
     waveMinCount: 4
     waveMaxCount: 4
-    waveMinSeparationDegrees: 45
-    waveSpawnInterval: 0.755
+    waveMinSeparationDegrees: 49.4
+    waveSpawnInterval: 0.484
     waveFadeInDuration: 0.35
-    waveDistance: 15.55
+    waveDistance: 15.07
     waveEqualDistribution: 1
     waveUniqueClips: 0
-    waveFirstInFrontOfAudience: 0
+    waveFirstInFrontOfAudience: 1
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 4-5 videos far/mid'
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 20
+    duration: 25
     goToNextCue: 1
-    toggleActiveTo: 0
+    toggleActiveTo: 1
     overrideSpawnerWave: 1
     waveMinCount: 4
     waveMaxCount: 5
     waveMinSeparationDegrees: 45
-    waveSpawnInterval: 0.281
-    waveFadeInDuration: 0.35
-    waveDistance: 11.92
+    waveSpawnInterval: 0.136
+    waveFadeInDuration: 0.331
+    waveDistance: 12.02
     waveEqualDistribution: 0
     waveUniqueClips: 0
     waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 6 videos mid/close'
     audio: {fileID: 0}
     video: {fileID: 621793858}
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 10
+    duration: 35
     goToNextCue: 1
-    toggleActiveTo: 0
+    toggleActiveTo: 1
     overrideSpawnerWave: 1
     waveMinCount: 6
     waveMaxCount: 6
     waveMinSeparationDegrees: 45
-    waveSpawnInterval: 0.281
-    waveFadeInDuration: 0.35
-    waveDistance: 5.99
+    waveSpawnInterval: 0.116
+    waveFadeInDuration: 0.234
+    waveDistance: 4.84
     waveEqualDistribution: 1
     waveUniqueClips: 0
-    waveFirstInFrontOfAudience: 0
+    waveFirstInFrontOfAudience: 1
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: chapter 2 video off
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 60033774}
+    gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 15
@@ -919,25 +1052,13 @@ MonoBehaviour:
     waveEqualDistribution: 0
     waveUniqueClips: 1
     waveFirstInFrontOfAudience: 0
-  - cueName: chapter 2 video off
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 621793857}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 0
-    goToNextCue: 1
-    toggleActiveTo: 1
-    overrideSpawnerWave: 0
-    waveMinCount: 1
-    waveMaxCount: 1
-    waveMinSeparationDegrees: 15
-    waveSpawnInterval: 0.35
-    waveFadeInDuration: 0.35
-    waveDistance: 5
-    waveEqualDistribution: 0
-    waveUniqueClips: 1
-    waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 1
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 0
   rebuildStateOnJumpAndRun: 1
   replayCueReceiversDuringJumpRebuild: 0
   simulateMediaTimeDuringJumpRebuild: 1
@@ -1256,15 +1377,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1833,15 +1954,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.4
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: 683d130d28be44cbe854834894190795, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2157,6 +2278,11 @@ MonoBehaviour:
   destroyClonesOnDisable: 1
   fadeInDuration: 0.35
   autoAddCanvasGroup: 1
+  despawnFlickerDuration: 1.2
+  despawnFlickerMinInterval: 0.04
+  despawnFlickerMaxInterval: 0.12
+  despawnFadeOutDuration: 0.25
+  disableRootOnDespawn: 1
   clipsFolder: Assets/chapter2
   autoRefreshClips: 1
 --- !u!1001 &637253235
@@ -2890,15 +3016,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -364223573239433514, guid: bc695248823984f4b974f2c0d69626c5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.82
+      value: 1.9299998
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: bc695248823984f4b974f2c0d69626c5, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.82
+      value: 1.9299998
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: bc695248823984f4b974f2c0d69626c5, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.82
+      value: 1.9299998
       objectReference: {fileID: 0}
     - target: {fileID: -364223573239433514, guid: bc695248823984f4b974f2c0d69626c5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3130,13 +3256,13 @@ MonoBehaviour:
   threadCount: 4
   attachFrameDebugger: 0
   frameDebugger: {fileID: 0}
-  customMaterial: {fileID: 0}
+  customMaterial: {fileID: -876546973899608171, guid: e19b5bb6cb8e91e43b1b5d81a069296f, type: 3}
   instantiateMaterial: 1
   materialSlots: 0
   customMaterialSlots: []
-  pointRenderPath: 0
-  pointSize: 0.0025
-  pointEmission: 10.1
+  pointRenderPath: 1
+  pointSize: 0.0015
+  pointEmission: 1.1
   readerInitialized: 0
   frameDropped: 0
   framesDroppedCounter: 0
@@ -3154,7 +3280,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1127004002}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eff831a212d734c29825d393a7c38fe4, type: 3}
   m_Name: 
@@ -4548,7 +4674,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.22495107, z: 0, w: 0.9743701}
   m_LocalPosition: {x: -0.012038112, y: 0, z: 0.12770385}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 468216429}
   - {fileID: 271281995}
@@ -6277,7 +6403,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4144726378324768440, guid: b6d57cedc6a73c94aad8ce006a26b41b, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4144726378324768440, guid: b6d57cedc6a73c94aad8ce006a26b41b, type: 3}
       propertyPath: m_MenuHandedness

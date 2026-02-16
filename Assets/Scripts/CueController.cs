@@ -30,7 +30,8 @@ public class Cue
     public bool goToNextCue = false;     // automatically trigger next cue when done
     public bool toggleActiveTo = true; // true = activate on start, false = deactivate on start
 
-    [Header("Spawner Wave")]
+    [Header("Video Spawner")]
+    [InspectorName("Override")]
     public bool overrideSpawnerWave = false;
     [Range(1, 10)] public int waveMinCount = 1;
     [Range(1, 10)] public int waveMaxCount = 1;
@@ -41,11 +42,23 @@ public class Cue
     public bool waveEqualDistribution = false;
     public bool waveUniqueClips = true;
     public bool waveFirstInFrontOfAudience = false;
+    [InspectorName("Despawn Now")] public bool videoSpawnerDespawnNow = false;
+    [InspectorName("Despawn On End")] public bool videoSpawnerDespawnOnCueEnd = false;
+    [InspectorName("Flicker Time")] [Range(0f, 10f)] public float videoSpawnerFlickerDuration = 1.2f;
+    [InspectorName("Flicker Min Gap")] [Range(0.01f, 1f)] public float videoSpawnerFlickerMinInterval = 0.04f;
+    [InspectorName("Flicker Max Gap")] [Range(0.01f, 1f)] public float videoSpawnerFlickerMaxInterval = 0.12f;
+    [InspectorName("Fade Out")] [Range(0f, 5f)] public float videoSpawnerFadeOutDuration = 0.25f;
+    [InspectorName("Disable Root")] public bool videoSpawnerDisableRootAfterDespawn = true;
 }
 
 public interface ICueTriggeredReceiver
 {
     void OnCueTriggered(Cue cue);
+}
+
+public interface ICueCompletedReceiver
+{
+    void OnCueCompleted(Cue cue, int cueIndex, bool isLastCue);
 }
 
 public class CueController : MonoBehaviour
@@ -68,6 +81,7 @@ public class CueController : MonoBehaviour
     private readonly Dictionary<GameObject, bool> baselineActiveStateByObject = new Dictionary<GameObject, bool>();
     private readonly HashSet<GameObject> cueReceiverObjects = new HashSet<GameObject>();
     private bool baselineCaptured = false;
+    private bool suppressCueCompletionCallbacks = false;
 
     private void Start()
     {
@@ -144,8 +158,10 @@ public class CueController : MonoBehaviour
 
     private void AbortCueExecution()
     {
+        suppressCueCompletionCallbacks = true;
         StopAllCoroutines();
         cueRunning = false;
+        suppressCueCompletionCallbacks = false;
     }
 
     private void CacheControlledTargets()
@@ -275,17 +291,36 @@ public class CueController : MonoBehaviour
 
     private void ApplyCueInstant(Cue cue, int cueIndex, float cueStartTime, float targetTimelineTime)
     {
+        bool receiverDriven = false;
+        if (cue.gameObject != null)
+        {
+            receiverDriven = cueReceiverObjects.Contains(cue.gameObject);
+            if (!receiverDriven && HasCueReceivers(cue.gameObject))
+            {
+                cueReceiverObjects.Add(cue.gameObject);
+                receiverDriven = true;
+            }
+        }
 
         if (cue.gameObject != null)
         {
             // Keep receiver-driven/spawner objects out of instant rebuild,
             // otherwise random/algorithmic behavior diverges from live cue flow.
-            if (!cueReceiverObjects.Contains(cue.gameObject))
+            if (!receiverDriven)
             {
                 cue.gameObject.SetActive(cue.toggleActiveTo);
 
                 if (replayCueReceiversDuringJumpRebuild)
                     NotifyCueReceivers(cue);
+            }
+            else if (replayCueReceiversDuringJumpRebuild)
+            {
+                // Optional replay mode for receiver-driven objects (spawners, movers, etc.).
+                // We force active before replay so receivers can run deterministically.
+                if (!cue.gameObject.activeSelf)
+                    cue.gameObject.SetActive(true);
+
+                NotifyCueReceivers(cue);
             }
         }
 
@@ -298,7 +333,7 @@ public class CueController : MonoBehaviour
             Debug.LogError($"Cue {cueIndex}: geometry action failed during jump rebuild: {e.Message}");
         }
 
-        if (!simulateMediaTimeDuringJumpRebuild)
+        if (!simulateMediaTimeDuringJumpRebuild || receiverDriven)
             return;
 
         float elapsedSinceCueStartAtTarget = Mathf.Max(0f, targetTimelineTime - cueStartTime);
@@ -426,7 +461,28 @@ public class CueController : MonoBehaviour
         {
             if (cue.gameObject != null)
             {
-                if (cue.toggleActiveTo)
+                bool receiverDriven = cueReceiverObjects.Contains(cue.gameObject);
+                if (!receiverDriven && HasCueReceivers(cue.gameObject))
+                {
+                    cueReceiverObjects.Add(cue.gameObject);
+                    receiverDriven = true;
+                }
+
+                if (receiverDriven)
+                {
+                    if (!cue.gameObject.activeSelf)
+                    {
+                        Debug.LogWarning($"Cue {index}: activating receiver-driven object {cue.gameObject.name}");
+                        cue.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Cue {index}: receiver-driven object {cue.gameObject.name}; skipping toggleActiveTo");
+                    }
+
+                    NotifyCueReceivers(cue);
+                }
+                else if (cue.toggleActiveTo)
                 {
                     Debug.LogWarning($"Cue {index}: activating object {cue.gameObject.name}");
                     cue.gameObject.SetActive(true);
@@ -436,8 +492,6 @@ public class CueController : MonoBehaviour
                     Debug.LogWarning($"Cue {index}: deactivating object {cue.gameObject.name}");
                     cue.gameObject.SetActive(false);
                 }
-
-                NotifyCueReceivers(cue);
             }
             else
             {
@@ -478,6 +532,9 @@ public class CueController : MonoBehaviour
         }
         finally
         {
+            if (!suppressCueCompletionCallbacks)
+                NotifyCueCompletionReceivers(cue, index);
+
             Debug.LogWarning($"Cue {index} END: {cue.cueName}");
             cueRunning = false;
 
@@ -594,6 +651,33 @@ public class CueController : MonoBehaviour
                 {
                     Debug.LogError($"Cue receiver error on {cue.gameObject.name}: {e.Message}");
                 }
+            }
+        }
+    }
+
+    private void NotifyCueCompletionReceivers(Cue cue, int cueIndex)
+    {
+        if (cue == null || cue.gameObject == null)
+            return;
+
+        bool isLastCue = cueIndex >= CueCount - 1;
+        var receivers = cue.gameObject.GetComponentsInChildren<ICueCompletedReceiver>(true);
+        if (receivers == null || receivers.Length == 0)
+            return;
+
+        for (int i = 0; i < receivers.Length; i++)
+        {
+            var receiver = receivers[i];
+            if (receiver == null)
+                continue;
+
+            try
+            {
+                receiver.OnCueCompleted(cue, cueIndex, isLastCue);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Cue completion receiver error on {cue.gameObject.name}: {e.Message}");
             }
         }
     }

@@ -218,20 +218,31 @@ public class CueOscReceiver : MonoBehaviour
 
     private void ProcessQueuedCommands()
     {
-        while (true)
+        QueuedCommand? latestJumpCommand = null;
+        var queuedRunCommands = new List<QueuedCommand>();
+
+        lock (queueLock)
         {
-            QueuedCommand command;
-
-            lock (queueLock)
+            while (commandQueue.Count > 0)
             {
-                if (commandQueue.Count == 0)
-                    return;
-
-                command = commandQueue.Dequeue();
+                var command = commandQueue.Dequeue();
+                if (command.Type == CueOscCommandType.JumpAndRun)
+                {
+                    // Coalesce rapid jump bursts to the latest request in this frame.
+                    latestJumpCommand = command;
+                }
+                else
+                {
+                    queuedRunCommands.Add(command);
+                }
             }
-
-            ExecuteCommand(command);
         }
+
+        for (int i = 0; i < queuedRunCommands.Count; i++)
+            ExecuteCommand(queuedRunCommands[i]);
+
+        if (latestJumpCommand.HasValue)
+            ExecuteCommand(latestJumpCommand.Value);
     }
 
     private void ExecuteCommand(QueuedCommand command)
