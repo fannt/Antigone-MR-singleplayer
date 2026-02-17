@@ -26,7 +26,7 @@ public class CueCsvExporter : MonoBehaviour
     private const string ColLight = "Light";
     private const string ColLxCue = "LX cue";
     private const string ColAudio = "Audio";
-    private const string ColNotes = "Notes";
+    private const string ColAudioIndex = "Audio index";
 
     private static readonly string[] CsvColumns =
     {
@@ -41,7 +41,7 @@ public class CueCsvExporter : MonoBehaviour
         ColLight,
         ColLxCue,
         ColAudio,
-        ColNotes
+        ColAudioIndex
     };
 
     [Header("Cue Source")]
@@ -56,7 +56,6 @@ public class CueCsvExporter : MonoBehaviour
     [SerializeField] private CueCsvWriteMode writeMode = CueCsvWriteMode.MergeExisting;
     [Tooltip("In Merge mode, skip writing when Unity cue index set is unchanged (no add/delete).")]
     [SerializeField] private bool writeOnlyOnCueCountChange = true;
-    [SerializeField] private bool includeCueIndexInNotes = true;
 
     public string LastExportPath { get; private set; } = string.Empty;
 
@@ -94,9 +93,17 @@ public class CueCsvExporter : MonoBehaviour
         {
             if (TryReadExistingRows(path, out List<Dictionary<string, string>> existingRows))
             {
-                rowsToWrite = MergeRows(unityRows, existingRows, out bool cueSetChanged, out int carriedRows, out int appendedRows);
-                modeInfo = $"merge(cueSetChanged={cueSetChanged},carried={carriedRows},appended={appendedRows})";
-                if (writeOnlyOnCueCountChange && !cueSetChanged)
+                rowsToWrite = MergeRows(
+                    unityRows,
+                    existingRows,
+                    out bool cueSetChanged,
+                    out int carriedRows,
+                    out int appendedRows,
+                    out int orphanRowsKept,
+                    out int conflictAppendedRows);
+                modeInfo = $"merge(cueSetChanged={cueSetChanged},carried={carriedRows},appended={appendedRows},conflictAppended={conflictAppendedRows},orphanKept={orphanRowsKept})";
+                bool hasMergeAdditions = appendedRows > 0 || conflictAppendedRows > 0;
+                if (writeOnlyOnCueCountChange && !cueSetChanged && !hasMergeAdditions)
                 {
                     shouldWrite = false;
                     modeInfo += "-skipped";
@@ -168,7 +175,7 @@ public class CueCsvExporter : MonoBehaviour
             string light = string.Empty;
             string lxCue = string.Empty;
             string audio = BuildAudioField(cue);
-            string notes = BuildNotesField(cue, i);
+            string audioIndex = string.Empty;
 
             var row = CreateEmptyRow();
             row[ColStartingTime] = startTime;
@@ -182,7 +189,7 @@ public class CueCsvExporter : MonoBehaviour
             row[ColLight] = light;
             row[ColLxCue] = lxCue;
             row[ColAudio] = audio;
-            row[ColNotes] = notes;
+            row[ColAudioIndex] = audioIndex;
             rows.Add(row);
 
             runningStartSeconds += Mathf.Max(0f, cue.duration);
@@ -252,14 +259,6 @@ public class CueCsvExporter : MonoBehaviour
         return row;
     }
 
-    private static void CopyUnityColumns(Dictionary<string, string> unityRow, Dictionary<string, string> targetRow)
-    {
-        targetRow[ColCue] = unityRow.TryGetValue(ColCue, out string cue) ? cue : string.Empty;
-        targetRow[ColVr] = unityRow.TryGetValue(ColVr, out string vr) ? vr : string.Empty;
-        targetRow[ColUnityCueIndex] = unityRow.TryGetValue(ColUnityCueIndex, out string idx) ? idx : string.Empty;
-        targetRow[ColUnityGoto] = unityRow.TryGetValue(ColUnityGoto, out string go) ? go : string.Empty;
-    }
-
     private static bool TryReadExistingRows(string path, out List<Dictionary<string, string>> rows)
     {
         rows = new List<Dictionary<string, string>>();
@@ -295,12 +294,15 @@ public class CueCsvExporter : MonoBehaviour
         List<Dictionary<string, string>> existingRows,
         out bool cueSetChanged,
         out int carriedRows,
-        out int appendedRows)
+        out int appendedRows,
+        out int orphanRowsKept,
+        out int conflictAppendedRows)
     {
         carriedRows = 0;
         appendedRows = 0;
+        orphanRowsKept = 0;
+        conflictAppendedRows = 0;
 
-        var unityByIndex = new Dictionary<int, Dictionary<string, string>>();
         var unityIndices = new HashSet<int>();
         for (int i = 0; i < unityRows.Count; i++)
         {
@@ -308,36 +310,45 @@ public class CueCsvExporter : MonoBehaviour
             if (!TryParseUnityCueIndex(row, out int idx))
                 continue;
 
-            unityByIndex[idx] = row;
             unityIndices.Add(idx);
         }
 
         var existingIndices = new HashSet<int>();
+        var existingCueNamesByIndex = new Dictionary<int, HashSet<string>>();
         for (int i = 0; i < existingRows.Count; i++)
         {
-            if (TryParseUnityCueIndex(existingRows[i], out int idx))
+            var row = existingRows[i];
+            if (TryParseUnityCueIndex(row, out int idx))
+            {
                 existingIndices.Add(idx);
+
+                if (!existingCueNamesByIndex.TryGetValue(idx, out HashSet<string> cueNames))
+                {
+                    cueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    existingCueNamesByIndex[idx] = cueNames;
+                }
+
+                if (row.TryGetValue(ColCue, out string cueName) && !string.IsNullOrWhiteSpace(cueName))
+                    cueNames.Add(cueName.Trim());
+            }
         }
 
         cueSetChanged = !existingIndices.SetEquals(unityIndices);
 
         var merged = new List<Dictionary<string, string>>();
-        var emitted = new HashSet<int>();
         for (int i = 0; i < existingRows.Count; i++)
         {
             Dictionary<string, string> existingRow = existingRows[i];
             if (TryParseUnityCueIndex(existingRow, out int idx))
             {
-                if (!unityByIndex.TryGetValue(idx, out Dictionary<string, string> unityRow))
+                if (!unityIndices.Contains(idx))
+                {
+                    merged.Add(CloneRow(existingRow));
+                    orphanRowsKept++;
                     continue;
+                }
 
-                if (emitted.Contains(idx))
-                    continue;
-
-                Dictionary<string, string> mergedRow = CloneRow(existingRow);
-                CopyUnityColumns(unityRow, mergedRow);
-                merged.Add(mergedRow);
-                emitted.Add(idx);
+                merged.Add(CloneRow(existingRow));
                 carriedRows++;
                 continue;
             }
@@ -351,11 +362,33 @@ public class CueCsvExporter : MonoBehaviour
             if (!TryParseUnityCueIndex(unityRow, out int idx))
                 continue;
 
-            if (emitted.Contains(idx))
+            if (existingIndices.Contains(idx))
                 continue;
 
-            merged.Add(CloneRow(unityRow));
+            InsertRowByTimeline(merged, unityRow);
             appendedRows++;
+        }
+
+        // If index exists but cue name changed, append Unity row so newly added cues are not lost.
+        for (int i = 0; i < unityRows.Count; i++)
+        {
+            Dictionary<string, string> unityRow = unityRows[i];
+            if (!TryParseUnityCueIndex(unityRow, out int idx))
+                continue;
+
+            if (!existingIndices.Contains(idx))
+                continue;
+
+            if (!unityRow.TryGetValue(ColCue, out string unityCueName) || string.IsNullOrWhiteSpace(unityCueName))
+                continue;
+
+            bool hasMatchingName = existingCueNamesByIndex.TryGetValue(idx, out HashSet<string> namesForIndex)
+                && namesForIndex.Contains(unityCueName.Trim());
+            if (hasMatchingName)
+                continue;
+
+            InsertRowByTimeline(merged, unityRow);
+            conflictAppendedRows++;
         }
 
         return merged;
@@ -378,6 +411,90 @@ public class CueCsvExporter : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static void InsertRowByTimeline(List<Dictionary<string, string>> rows, Dictionary<string, string> sourceRow)
+    {
+        Dictionary<string, string> rowToInsert = CloneRow(sourceRow);
+        if (!TryGetRowStartTimeSeconds(rowToInsert, out float rowTimeSeconds))
+        {
+            rows.Add(rowToInsert);
+            return;
+        }
+
+        int insertAt = rows.Count;
+        int lastTimedIndex = -1;
+        const float epsilon = 0.0001f;
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (!TryGetRowStartTimeSeconds(rows[i], out float existingTimeSeconds))
+                continue;
+
+            lastTimedIndex = i;
+
+            if (existingTimeSeconds > rowTimeSeconds + epsilon)
+            {
+                insertAt = i;
+                break;
+            }
+
+            if (Mathf.Abs(existingTimeSeconds - rowTimeSeconds) <= epsilon)
+            {
+                insertAt = i + 1;
+            }
+        }
+
+        if (insertAt == rows.Count && lastTimedIndex >= 0)
+            insertAt = lastTimedIndex + 1;
+
+        rows.Insert(Mathf.Clamp(insertAt, 0, rows.Count), rowToInsert);
+    }
+
+    private static bool TryGetRowStartTimeSeconds(Dictionary<string, string> row, out float seconds)
+    {
+        seconds = 0f;
+        if (!row.TryGetValue(ColStartingTime, out string raw) || string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        return TryParseMmSsTimestamp(raw, out seconds);
+    }
+
+    private static bool TryParseMmSsTimestamp(string raw, out float seconds)
+    {
+        seconds = 0f;
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        string trimmed = raw.Trim();
+        if (float.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out seconds))
+            return true;
+
+        bool negative = trimmed.StartsWith("-", StringComparison.Ordinal);
+        if (negative)
+            trimmed = trimmed.Substring(1);
+
+        string[] parts = trimmed.Split(':');
+        if (parts.Length < 2 || parts.Length > 3)
+            return false;
+
+        if (!float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float mm))
+            return false;
+        if (!float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float ss))
+            return false;
+
+        float result = mm * 60f + ss;
+        if (parts.Length == 3)
+        {
+            if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float ms))
+                return false;
+
+            // MM:SS:MS (milliseconds)
+            result += ms / 1000f;
+        }
+
+        seconds = negative ? -result : result;
+        return true;
     }
 
     private static Dictionary<string, int> BuildHeaderMap(List<string> headerRow)
@@ -518,19 +635,6 @@ public class CueCsvExporter : MonoBehaviour
             return sourceName;
 
         return $"{sourceName} ({clipName})";
-    }
-
-    private string BuildNotesField(Cue cue, int cueIndex)
-    {
-        var notes = new List<string>(2);
-
-        if (cue.goToNextCue)
-            notes.Add("auto-next");
-
-        if (includeCueIndexInNotes)
-            notes.Add($"index={cueIndex}");
-
-        return string.Join(" | ", notes);
     }
 
     private static string FormatMmSs00(float seconds)
