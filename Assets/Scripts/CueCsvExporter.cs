@@ -28,6 +28,26 @@ public class CueCsvExporter : MonoBehaviour
     private const string ColAudio = "Audio";
     private const string ColAudioIndex = "Audio index";
 
+    private static readonly string[] UnityManagedColumns =
+    {
+        ColStartingTime,
+        ColDuration,
+        ColCue,
+        ColVr,
+        ColUnityCueIndex,
+        ColUnityGoto
+    };
+
+    private static readonly string[] ExternalColumns =
+    {
+        ColDescription,
+        ColVideo,
+        ColLight,
+        ColLxCue,
+        ColAudio,
+        ColAudioIndex
+    };
+
     private static readonly string[] CsvColumns =
     {
         ColStartingTime,
@@ -100,10 +120,21 @@ public class CueCsvExporter : MonoBehaviour
                     out int carriedRows,
                     out int appendedRows,
                     out int orphanRowsKept,
-                    out int conflictAppendedRows);
-                modeInfo = $"merge(cueSetChanged={cueSetChanged},carried={carriedRows},appended={appendedRows},conflictAppended={conflictAppendedRows},orphanKept={orphanRowsKept})";
-                bool hasMergeAdditions = appendedRows > 0 || conflictAppendedRows > 0;
-                if (writeOnlyOnCueCountChange && !cueSetChanged && !hasMergeAdditions)
+                    out int prunedDuplicateManagedRows,
+                    out int prunedStaleManagedRows,
+                    out int coverageInsertedRows,
+                    out int clearedExternalIndexConflicts);
+                bool needsNormalization = NeedsTimeNormalization(existingRows);
+                bool needsOrdering = NeedsTimelineOrdering(existingRows);
+                modeInfo = $"merge(cueSetChanged={cueSetChanged},carried={carriedRows},appended={appendedRows},coverageInserted={coverageInsertedRows},clearedExternalIdx={clearedExternalIndexConflicts},orphanKept={orphanRowsKept},prunedDup={prunedDuplicateManagedRows},prunedStale={prunedStaleManagedRows},normalize={needsNormalization},ordering={needsOrdering})";
+                bool hasMergeChanges = appendedRows > 0 ||
+                                       coverageInsertedRows > 0 ||
+                                       clearedExternalIndexConflicts > 0 ||
+                                       prunedDuplicateManagedRows > 0 ||
+                                       prunedStaleManagedRows > 0 ||
+                                       needsNormalization ||
+                                       needsOrdering;
+                if (writeOnlyOnCueCountChange && !cueSetChanged && !hasMergeChanges)
                 {
                     shouldWrite = false;
                     modeInfo += "-skipped";
@@ -117,6 +148,8 @@ public class CueCsvExporter : MonoBehaviour
 
         if (shouldWrite)
         {
+            SortRowsByTimeline(rowsToWrite);
+            NormalizeTimeColumns(rowsToWrite);
             string csv = BuildCsv(rowsToWrite);
             File.WriteAllText(path, csv, new UTF8Encoding(false));
         }
@@ -296,14 +329,21 @@ public class CueCsvExporter : MonoBehaviour
         out int carriedRows,
         out int appendedRows,
         out int orphanRowsKept,
-        out int conflictAppendedRows)
+        out int prunedDuplicateManagedRows,
+        out int prunedStaleManagedRows,
+        out int coverageInsertedRows,
+        out int clearedExternalIndexConflicts)
     {
         carriedRows = 0;
         appendedRows = 0;
         orphanRowsKept = 0;
-        conflictAppendedRows = 0;
+        prunedDuplicateManagedRows = 0;
+        prunedStaleManagedRows = 0;
+        coverageInsertedRows = 0;
+        clearedExternalIndexConflicts = 0;
 
         var unityIndices = new HashSet<int>();
+        var unityCueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         for (int i = 0; i < unityRows.Count; i++)
         {
             Dictionary<string, string> row = unityRows[i];
@@ -311,33 +351,63 @@ public class CueCsvExporter : MonoBehaviour
                 continue;
 
             unityIndices.Add(idx);
+            if (TryGetCueName(row, out string cueName))
+                unityCueNames.Add(cueName);
         }
 
         var existingIndices = new HashSet<int>();
-        var existingCueNamesByIndex = new Dictionary<int, HashSet<string>>();
         for (int i = 0; i < existingRows.Count; i++)
         {
             var row = existingRows[i];
             if (TryParseUnityCueIndex(row, out int idx))
-            {
                 existingIndices.Add(idx);
-
-                if (!existingCueNamesByIndex.TryGetValue(idx, out HashSet<string> cueNames))
-                {
-                    cueNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    existingCueNamesByIndex[idx] = cueNames;
-                }
-
-                if (row.TryGetValue(ColCue, out string cueName) && !string.IsNullOrWhiteSpace(cueName))
-                    cueNames.Add(cueName.Trim());
-            }
         }
 
         cueSetChanged = !existingIndices.SetEquals(unityIndices);
 
+        bool[] usedExistingRows = new bool[existingRows.Count];
+        var replacementByExistingRow = new Dictionary<int, Dictionary<string, string>>();
+        var appendedUnityRows = new List<Dictionary<string, string>>();
+        var outputManagedPairs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        for (int i = 0; i < unityRows.Count; i++)
+        {
+            Dictionary<string, string> unityRow = unityRows[i];
+            if (!TryParseUnityCueIndex(unityRow, out _))
+                continue;
+
+            int existingMatch = FindBestExistingMatch(existingRows, usedExistingRows, unityRow, cueSetChanged);
+            if (existingMatch >= 0)
+            {
+                Dictionary<string, string> replacement = CloneRow(existingRows[existingMatch]);
+                CopyManagedColumns(unityRow, replacement);
+                replacementByExistingRow[existingMatch] = replacement;
+                usedExistingRows[existingMatch] = true;
+                carriedRows++;
+
+                if (TryBuildManagedPairKey(replacement, out string managedPair))
+                    outputManagedPairs.Add(managedPair);
+            }
+            else
+            {
+                Dictionary<string, string> appended = CloneRow(unityRow);
+                appendedUnityRows.Add(appended);
+                appendedRows++;
+
+                if (TryBuildManagedPairKey(appended, out string managedPair))
+                    outputManagedPairs.Add(managedPair);
+            }
+        }
+
         var merged = new List<Dictionary<string, string>>();
         for (int i = 0; i < existingRows.Count; i++)
         {
+            if (replacementByExistingRow.TryGetValue(i, out Dictionary<string, string> replacement))
+            {
+                merged.Add(replacement);
+                continue;
+            }
+
             Dictionary<string, string> existingRow = existingRows[i];
             if (TryParseUnityCueIndex(existingRow, out int idx))
             {
@@ -348,50 +418,240 @@ public class CueCsvExporter : MonoBehaviour
                     continue;
                 }
 
+                if (TryBuildManagedPairKey(existingRow, out string existingPairKey) && outputManagedPairs.Contains(existingPairKey))
+                {
+                    prunedDuplicateManagedRows++;
+                    continue;
+                }
+
+                bool hasCueName = TryGetCueName(existingRow, out string existingCueName);
+                bool cueIsManagedByUnity = hasCueName && unityCueNames.Contains(existingCueName);
+                if (LooksAutoGeneratedUnityRow(existingRow) || cueIsManagedByUnity)
+                {
+                    prunedStaleManagedRows++;
+                    continue;
+                }
+
+                if (hasCueName && !cueIsManagedByUnity)
+                {
+                    // Keep external cue row, but clear conflicting Unity index so
+                    // one Unity cue index maps to one managed cue row.
+                    Dictionary<string, string> clearedConflictRow = CloneRow(existingRow);
+                    clearedConflictRow[ColUnityCueIndex] = string.Empty;
+                    clearedConflictRow[ColUnityGoto] = string.Empty;
+                    merged.Add(clearedConflictRow);
+                    clearedExternalIndexConflicts++;
+                    continue;
+                }
+
                 merged.Add(CloneRow(existingRow));
-                carriedRows++;
                 continue;
             }
 
             merged.Add(CloneRow(existingRow));
         }
 
-        for (int i = 0; i < unityRows.Count; i++)
+        for (int i = 0; i < appendedUnityRows.Count; i++)
         {
-            Dictionary<string, string> unityRow = unityRows[i];
-            if (!TryParseUnityCueIndex(unityRow, out int idx))
-                continue;
-
-            if (existingIndices.Contains(idx))
-                continue;
-
-            InsertRowByTimeline(merged, unityRow);
-            appendedRows++;
+            InsertRowByTimeline(merged, appendedUnityRows[i]);
         }
 
-        // If index exists but cue name changed, append Unity row so newly added cues are not lost.
-        for (int i = 0; i < unityRows.Count; i++)
-        {
-            Dictionary<string, string> unityRow = unityRows[i];
-            if (!TryParseUnityCueIndex(unityRow, out int idx))
-                continue;
-
-            if (!existingIndices.Contains(idx))
-                continue;
-
-            if (!unityRow.TryGetValue(ColCue, out string unityCueName) || string.IsNullOrWhiteSpace(unityCueName))
-                continue;
-
-            bool hasMatchingName = existingCueNamesByIndex.TryGetValue(idx, out HashSet<string> namesForIndex)
-                && namesForIndex.Contains(unityCueName.Trim());
-            if (hasMatchingName)
-                continue;
-
-            InsertRowByTimeline(merged, unityRow);
-            conflictAppendedRows++;
-        }
+        coverageInsertedRows = EnsureUnityCoverage(merged, unityRows);
 
         return merged;
+    }
+
+    private static int EnsureUnityCoverage(List<Dictionary<string, string>> mergedRows, List<Dictionary<string, string>> unityRows)
+    {
+        if (mergedRows == null || unityRows == null || unityRows.Count == 0)
+            return 0;
+
+        var existingManagedPairs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (int i = 0; i < mergedRows.Count; i++)
+        {
+            Dictionary<string, string> row = mergedRows[i];
+            if (TryBuildManagedPairKey(row, out string pairKey))
+                existingManagedPairs.Add(pairKey);
+        }
+
+        int inserted = 0;
+        for (int i = 0; i < unityRows.Count; i++)
+        {
+            Dictionary<string, string> unityRow = unityRows[i];
+            if (!TryBuildManagedPairKey(unityRow, out string pairKey))
+                continue;
+
+            if (existingManagedPairs.Contains(pairKey))
+                continue;
+
+            InsertRowByTimeline(mergedRows, unityRow);
+            existingManagedPairs.Add(pairKey);
+            inserted++;
+        }
+
+        return inserted;
+    }
+
+    private static int FindBestExistingMatch(
+        List<Dictionary<string, string>> existingRows,
+        bool[] usedExistingRows,
+        Dictionary<string, string> unityRow,
+        bool cueSetChanged)
+    {
+        if (!TryParseUnityCueIndex(unityRow, out int unityIndex))
+            return -1;
+
+        string unityCueName = TryGetCueName(unityRow, out string cueName) ? cueName : string.Empty;
+        string unityVr = GetCellTrim(unityRow, ColVr);
+
+        int bestRowIndex = -1;
+        int bestScore = int.MinValue;
+        bool foundCueNameMatch = false;
+
+        for (int i = 0; i < existingRows.Count; i++)
+        {
+            if (usedExistingRows[i])
+                continue;
+
+            Dictionary<string, string> existingRow = existingRows[i];
+            if (!TryParseUnityCueIndex(existingRow, out int existingIndex))
+                continue;
+
+            string existingCueName = TryGetCueName(existingRow, out string parsedCueName) ? parsedCueName : string.Empty;
+            if (!string.IsNullOrEmpty(unityCueName) &&
+                string.Equals(unityCueName, existingCueName, StringComparison.OrdinalIgnoreCase))
+            {
+                foundCueNameMatch = true;
+                int score = ScoreExistingMatch(existingRow, unityRow, existingIndex, unityIndex, unityVr, cueSetChanged);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestRowIndex = i;
+                }
+            }
+        }
+
+        if (foundCueNameMatch)
+            return bestRowIndex;
+
+        // Fallback for rows with no/changed cue names: prefer same Unity index.
+        for (int i = 0; i < existingRows.Count; i++)
+        {
+            if (usedExistingRows[i])
+                continue;
+
+            Dictionary<string, string> existingRow = existingRows[i];
+            if (!TryParseUnityCueIndex(existingRow, out int existingIndex))
+                continue;
+
+            if (existingIndex == unityIndex)
+                return i;
+        }
+
+        return -1;
+    }
+
+    private static int ScoreExistingMatch(
+        Dictionary<string, string> existingRow,
+        Dictionary<string, string> unityRow,
+        int existingIndex,
+        int unityIndex,
+        string unityVr,
+        bool cueSetChanged)
+    {
+        int score = CountExternalDataColumns(existingRow) * 10;
+
+        if (existingIndex == unityIndex)
+            score += cueSetChanged ? 4 : 12;
+
+        string existingVr = GetCellTrim(existingRow, ColVr);
+        if (!string.IsNullOrEmpty(unityVr) &&
+            string.Equals(existingVr, unityVr, StringComparison.OrdinalIgnoreCase))
+            score += 3;
+
+        if (TryGetRowStartTimeSeconds(existingRow, out float existingStart) &&
+            TryGetRowStartTimeSeconds(unityRow, out float unityStart))
+        {
+            float delta = Mathf.Abs(existingStart - unityStart);
+            score -= Mathf.RoundToInt(Mathf.Clamp(delta, 0f, 30f));
+        }
+
+        return score;
+    }
+
+    private static int CountExternalDataColumns(Dictionary<string, string> row)
+    {
+        int count = 0;
+        for (int i = 0; i < ExternalColumns.Length; i++)
+        {
+            string col = ExternalColumns[i];
+            if (!IsEmptyCell(row, col))
+                count++;
+        }
+
+        return count;
+    }
+
+    private static string GetCellTrim(Dictionary<string, string> row, string colName)
+    {
+        if (!row.TryGetValue(colName, out string value) || string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return value.Trim();
+    }
+
+    private static void CopyManagedColumns(Dictionary<string, string> sourceRow, Dictionary<string, string> targetRow)
+    {
+        for (int i = 0; i < UnityManagedColumns.Length; i++)
+        {
+            string col = UnityManagedColumns[i];
+            targetRow[col] = sourceRow.TryGetValue(col, out string value) ? value ?? string.Empty : string.Empty;
+        }
+    }
+
+    private static bool TryBuildManagedPairKey(Dictionary<string, string> row, out string key)
+    {
+        key = string.Empty;
+        if (!TryParseUnityCueIndex(row, out int idx))
+            return false;
+
+        if (!TryGetCueName(row, out string cueName))
+            return false;
+
+        key = MakePairKey(idx, cueName);
+        return true;
+    }
+
+    private static bool TryGetCueName(Dictionary<string, string> row, out string cueName)
+    {
+        cueName = string.Empty;
+        if (!row.TryGetValue(ColCue, out string raw) || string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        cueName = raw.Trim();
+        return cueName.Length > 0;
+    }
+
+    private static string MakePairKey(int idx, string cueName)
+    {
+        return $"{idx}|{cueName.Trim()}";
+    }
+
+    private static bool LooksAutoGeneratedUnityRow(Dictionary<string, string> row)
+    {
+        // Heuristic: rows produced by Unity exporter usually leave show-control fields empty.
+        bool emptyDescription = IsEmptyCell(row, ColDescription);
+        bool emptyLight = IsEmptyCell(row, ColLight);
+        bool emptyLx = IsEmptyCell(row, ColLxCue);
+        bool emptyAudioIndex = IsEmptyCell(row, ColAudioIndex);
+        bool hasCue = !IsEmptyCell(row, ColCue);
+        bool hasVr = !IsEmptyCell(row, ColVr);
+        return emptyDescription && emptyLight && emptyLx && emptyAudioIndex && (hasCue || hasVr);
+    }
+
+    private static bool IsEmptyCell(Dictionary<string, string> row, string col)
+    {
+        return !row.TryGetValue(col, out string value) || string.IsNullOrWhiteSpace(value);
     }
 
     private static bool TryParseUnityCueIndex(Dictionary<string, string> row, out int idx)
@@ -495,6 +755,131 @@ public class CueCsvExporter : MonoBehaviour
 
         seconds = negative ? -result : result;
         return true;
+    }
+
+    private static bool NeedsTimeNormalization(List<Dictionary<string, string>> rows)
+    {
+        if (rows == null)
+            return false;
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            Dictionary<string, string> row = rows[i];
+            if (NeedsTimeNormalization(row, ColStartingTime) || NeedsTimeNormalization(row, ColDuration))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool NeedsTimeNormalization(Dictionary<string, string> row, string colName)
+    {
+        if (!row.TryGetValue(colName, out string raw) || string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        if (!TryParseMmSsTimestamp(raw, out float seconds))
+            return false;
+
+        string normalized = FormatMmSs00(seconds);
+        return !string.Equals(raw.Trim(), normalized, StringComparison.Ordinal);
+    }
+
+    private static bool NeedsTimelineOrdering(List<Dictionary<string, string>> rows)
+    {
+        if (rows == null || rows.Count < 2)
+            return false;
+
+        bool hasPrevious = false;
+        float previous = 0f;
+        const float epsilon = 0.0001f;
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (!TryGetRowStartTimeSeconds(rows[i], out float current))
+                continue;
+
+            if (hasPrevious && current + epsilon < previous)
+                return true;
+
+            previous = current;
+            hasPrevious = true;
+        }
+
+        return false;
+    }
+
+    private static void NormalizeTimeColumns(List<Dictionary<string, string>> rows)
+    {
+        if (rows == null)
+            return;
+
+        for (int i = 0; i < rows.Count; i++)
+        {
+            Dictionary<string, string> row = rows[i];
+            NormalizeTimeCell(row, ColStartingTime);
+            NormalizeTimeCell(row, ColDuration);
+        }
+    }
+
+    private static void NormalizeTimeCell(Dictionary<string, string> row, string colName)
+    {
+        if (!row.TryGetValue(colName, out string raw) || string.IsNullOrWhiteSpace(raw))
+            return;
+
+        if (!TryParseMmSsTimestamp(raw, out float seconds))
+            return;
+
+        row[colName] = FormatMmSs00(seconds);
+    }
+
+    private struct TimelineSortItem
+    {
+        public Dictionary<string, string> Row;
+        public bool HasTime;
+        public float TimeSeconds;
+        public int OriginalOrder;
+    }
+
+    private static void SortRowsByTimeline(List<Dictionary<string, string>> rows)
+    {
+        if (rows == null || rows.Count < 2)
+            return;
+
+        var items = new List<TimelineSortItem>(rows.Count);
+        for (int i = 0; i < rows.Count; i++)
+        {
+            Dictionary<string, string> row = rows[i];
+            bool hasTime = TryGetRowStartTimeSeconds(row, out float timeSeconds);
+            items.Add(new TimelineSortItem
+            {
+                Row = row,
+                HasTime = hasTime,
+                TimeSeconds = hasTime ? timeSeconds : 0f,
+                OriginalOrder = i
+            });
+        }
+
+        const float epsilon = 0.0001f;
+        items.Sort((a, b) =>
+        {
+            if (a.HasTime && b.HasTime)
+            {
+                float delta = a.TimeSeconds - b.TimeSeconds;
+                if (Mathf.Abs(delta) > epsilon)
+                    return delta < 0f ? -1 : 1;
+
+                return a.OriginalOrder.CompareTo(b.OriginalOrder);
+            }
+
+            if (a.HasTime != b.HasTime)
+                return a.HasTime ? -1 : 1;
+
+            return a.OriginalOrder.CompareTo(b.OriginalOrder);
+        });
+
+        rows.Clear();
+        for (int i = 0; i < items.Count; i++)
+            rows.Add(items[i].Row);
     }
 
     private static Dictionary<string, int> BuildHeaderMap(List<string> headerRow)
@@ -645,7 +1030,7 @@ public class CueCsvExporter : MonoBehaviour
         int secs = totalSeconds % 60;
 
         string sign = isNegative ? "-" : string.Empty;
-        return string.Format(CultureInfo.InvariantCulture, "{0}{1:00}:{2:00}:00", sign, minutes, secs);
+        return string.Format(CultureInfo.InvariantCulture, "{0}{1}:{2:00}:00", sign, minutes, secs);
     }
 
     private static void AppendCsvRow(StringBuilder sb, params string[] fields)

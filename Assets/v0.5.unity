@@ -1080,7 +1080,7 @@ MonoBehaviour:
     waveMinSeparationDegrees: 45
     waveSpawnInterval: 0.116
     waveFadeInDuration: 0.234
-    waveDistance: 4.84
+    waveDistance: 4.4
     waveEqualDistribution: 1
     waveUniqueClips: 0
     waveFirstInFrontOfAudience: 1
@@ -1173,7 +1173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e0e9fc45ca48b585fd30cf1226d80f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CueOscReceiver
-  cueController: {fileID: 0}
+  cueController: {fileID: 184794329}
   autoFindCueController: 1
   listenPort: 9000
   runCueAddress: /cue/run
@@ -1186,7 +1186,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184794328}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a19a7fa14e860433ab83be747ffbb003, type: 3}
   m_Name: 
