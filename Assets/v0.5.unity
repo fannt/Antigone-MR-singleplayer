@@ -571,32 +571,6 @@ MonoBehaviour:
     videoSpawnerFlickerMaxInterval: 0.12
     videoSpawnerFadeOutDuration: 0.25
     videoSpawnerDisableRootAfterDespawn: 1
-  - cueName: forest green
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 180465676}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 0
-    goToNextCue: 1
-    toggleActiveTo: 0
-    overrideSpawnerWave: 0
-    waveMinCount: 1
-    waveMaxCount: 1
-    waveMinSeparationDegrees: 15
-    waveSpawnInterval: 0.35
-    waveFadeInDuration: 0.35
-    waveDistance: 5
-    waveEqualDistribution: 0
-    waveUniqueClips: 1
-    waveFirstInFrontOfAudience: 0
-    videoSpawnerDespawnNow: 0
-    videoSpawnerDespawnOnCueEnd: 0
-    videoSpawnerFlickerDuration: 1.2
-    videoSpawnerFlickerMinInterval: 0.04
-    videoSpawnerFlickerMaxInterval: 0.12
-    videoSpawnerFadeOutDuration: 0.25
-    videoSpawnerDisableRootAfterDespawn: 0
   - cueName: intro delay comp
     audio: {fileID: 0}
     video: {fileID: 0}
@@ -629,7 +603,33 @@ MonoBehaviour:
     gameObject: {fileID: 1547277065}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 100
+    duration: 30
+    goToNextCue: 1
+    toggleActiveTo: 1
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
+  - cueName: forest green
+    audio: {fileID: 0}
+    video: {fileID: 791443345}
+    gameObject: {fileID: 180465676}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 70
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -701,7 +701,33 @@ MonoBehaviour:
     videoSpawnerFlickerMaxInterval: 0.12
     videoSpawnerFadeOutDuration: 0.25
     videoSpawnerDisableRootAfterDespawn: 1
-  - cueName: chapter 2.1 ipad
+  - cueName: forest off
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 180465676}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 0
+    goToNextCue: 1
+    toggleActiveTo: 0
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 1.2
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
+  - cueName: ' ipad'
     audio: {fileID: 0}
     video: {fileID: 380864267}
     gameObject: {fileID: 380864266}
@@ -722,32 +748,6 @@ MonoBehaviour:
     waveFirstInFrontOfAudience: 0
     videoSpawnerDespawnNow: 0
     videoSpawnerDespawnOnCueEnd: 0
-    videoSpawnerFlickerDuration: 1.2
-    videoSpawnerFlickerMinInterval: 0.04
-    videoSpawnerFlickerMaxInterval: 0.12
-    videoSpawnerFadeOutDuration: 0.25
-    videoSpawnerDisableRootAfterDespawn: 1
-  - cueName: forest off
-    audio: {fileID: 0}
-    video: {fileID: 0}
-    gameObject: {fileID: 180465676}
-    geometryPlayer: {fileID: 0}
-    geometryAction: 0
-    duration: 0
-    goToNextCue: 1
-    toggleActiveTo: 0
-    overrideSpawnerWave: 0
-    waveMinCount: 1
-    waveMaxCount: 1
-    waveMinSeparationDegrees: 15
-    waveSpawnInterval: 0.35
-    waveFadeInDuration: 0.35
-    waveDistance: 5
-    waveEqualDistribution: 0
-    waveUniqueClips: 1
-    waveFirstInFrontOfAudience: 0
-    videoSpawnerDespawnNow: 1
-    videoSpawnerDespawnOnCueEnd: 1
     videoSpawnerFlickerDuration: 1.2
     videoSpawnerFlickerMinInterval: 0.04
     videoSpawnerFlickerMaxInterval: 0.12
@@ -961,6 +961,32 @@ MonoBehaviour:
     videoSpawnerFlickerMaxInterval: 0.12
     videoSpawnerFadeOutDuration: 0.25
     videoSpawnerDisableRootAfterDespawn: 1
+  - cueName: chapter 2 car on
+    audio: {fileID: 0}
+    video: {fileID: 0}
+    gameObject: {fileID: 1631410607}
+    geometryPlayer: {fileID: 0}
+    geometryAction: 0
+    duration: 0
+    goToNextCue: 1
+    toggleActiveTo: 1
+    overrideSpawnerWave: 0
+    waveMinCount: 1
+    waveMaxCount: 1
+    waveMinSeparationDegrees: 15
+    waveSpawnInterval: 0.35
+    waveFadeInDuration: 0.35
+    waveDistance: 5
+    waveEqualDistribution: 0
+    waveUniqueClips: 1
+    waveFirstInFrontOfAudience: 0
+    videoSpawnerDespawnNow: 0
+    videoSpawnerDespawnOnCueEnd: 0
+    videoSpawnerFlickerDuration: 2.31
+    videoSpawnerFlickerMinInterval: 0.04
+    videoSpawnerFlickerMaxInterval: 0.12
+    videoSpawnerFadeOutDuration: 0
+    videoSpawnerDisableRootAfterDespawn: 0
   - cueName: 'chapter 2: 3 videos far'
     audio: {fileID: 0}
     video: {fileID: 621793858}
@@ -1013,15 +1039,15 @@ MonoBehaviour:
     videoSpawnerFlickerMaxInterval: 0.12
     videoSpawnerFadeOutDuration: 0.25
     videoSpawnerDisableRootAfterDespawn: 1
-  - cueName: chapter 2 car on
+  - cueName: car off
     audio: {fileID: 0}
     video: {fileID: 0}
     gameObject: {fileID: 1631410607}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 0
+    duration: 15
     goToNextCue: 1
-    toggleActiveTo: 1
+    toggleActiveTo: 0
     overrideSpawnerWave: 0
     waveMinCount: 1
     waveMaxCount: 1
@@ -1034,11 +1060,11 @@ MonoBehaviour:
     waveFirstInFrontOfAudience: 0
     videoSpawnerDespawnNow: 0
     videoSpawnerDespawnOnCueEnd: 0
-    videoSpawnerFlickerDuration: 2.31
+    videoSpawnerFlickerDuration: 1.2
     videoSpawnerFlickerMinInterval: 0.04
     videoSpawnerFlickerMaxInterval: 0.12
-    videoSpawnerFadeOutDuration: 0
-    videoSpawnerDisableRootAfterDespawn: 0
+    videoSpawnerFadeOutDuration: 0.25
+    videoSpawnerDisableRootAfterDespawn: 1
   - cueName: 'chapter 2: 4-5 videos far/mid'
     audio: {fileID: 0}
     video: {fileID: 621793858}
@@ -1097,7 +1123,7 @@ MonoBehaviour:
     gameObject: {fileID: 621793857}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
-    duration: 15
+    duration: 60
     goToNextCue: 1
     toggleActiveTo: 1
     overrideSpawnerWave: 0
@@ -1120,7 +1146,7 @@ MonoBehaviour:
   - cueName: chapter 2 car off
     audio: {fileID: 0}
     video: {fileID: 0}
-    gameObject: {fileID: 1631410607}
+    gameObject: {fileID: 1213254253}
     geometryPlayer: {fileID: 0}
     geometryAction: 0
     duration: 15
@@ -2873,6 +2899,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Renderer: {fileID: 1291399511}
   m_MaterialIndex: 0
+--- !u!328 &791443345 stripped
+VideoPlayer:
+  m_CorrespondingSourceObject: {fileID: 1675212246467271995, guid: 66b00cc69a525444282d04d5e3f57a89, type: 3}
+  m_PrefabInstance: {fileID: 390132270}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &798337360
 GameObject:
   m_ObjectHideFlags: 0
